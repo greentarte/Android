@@ -10,58 +10,59 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@android:color/holo_blue_bright">
+        android:layout_weight="1">
 
         <WebView
-            android:id="@+id/wv"
+            android:id="@+id/wb_vw"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/transparent" />
+            android:background="@android:color/holo_purple">
+
+        </WebView>
 
         <LinearLayout
-            android:id="@+id/ll"
+            android:id="@+id/lnr_lyt"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/holo_red_dark"
+            android:background="@android:color/holo_green_light"
             android:orientation="vertical"></LinearLayout>
 
         <ImageView
-            android:id="@+id/iv"
+            android:id="@+id/img_vw"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/bg5" />
+            app:srcCompat="@drawable/bg1" />
+
     </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="10"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/bt1"
+            android:id="@+id/btn1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="clickBt"
+            android:onClick="onClickBnt"
             android:text="Button" />
 
         <Button
-            android:id="@+id/bt2"
+            android:id="@+id/btn2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="clickBt"
+            android:onClick="onClickBnt"
             android:text="Button" />
 
         <Button
-            android:id="@+id/bt3"
+            android:id="@+id/btn3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="clickBt"
+            android:onClick="onClickBnt"
             android:text="Button" />
     </LinearLayout>
-
 </LinearLayout>

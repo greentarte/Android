@@ -1,6 +1,5 @@
 package com.example.student.p227;
 
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,42 +9,46 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity {
-    WebView wv;
-    LinearLayout ll;
-    ImageView iv;
-
+    WebView wb_vw;
+    LinearLayout lnr_lyt;
+    ImageView img_vw;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        makeui();
+        initUI();
     }
-    public void makeui(){
-        wv=findViewById(R.id.wv);
-        ll=findViewById(R.id.ll);
-        iv=findViewById(R.id.iv);
-    wv.setWebViewClient(new WebViewClient());
-    wv.getSettings().setJavaScriptEnabled(true);
+    public void initUI() {
+        wb_vw = findViewById(R.id.wb_vw);
+        lnr_lyt = findViewById(R.id.lnr_lyt);
+        img_vw = findViewById(R.id.img_vw);
 
-        wv.setVisibility(View.INVISIBLE);
-        ll.setVisibility(View.INVISIBLE);
-        iv.setVisibility(View.INVISIBLE);
+        wb_vw.setWebViewClient(new WebViewClient());
+        wb_vw.getSettings().setJavaScriptEnabled(true);
 
+        wb_vw.setVisibility(View.INVISIBLE);
+        lnr_lyt.setVisibility(View.INVISIBLE);
+        img_vw.setVisibility(View.INVISIBLE);
     }
-    public void clickBt(View v){
-        if(v.getId()==R.id.bt1){
-            wv.setVisibility(View.VISIBLE);
-            wv.loadUrl("http://m.naver.com");
-            ll.setVisibility(View.INVISIBLE);
-            iv.setVisibility(View.INVISIBLE);
-        }else if(v.getId()==R.id.bt2){
-            wv.setVisibility(View.INVISIBLE);
-            ll.setVisibility(View.VISIBLE);
-            iv.setVisibility(View.INVISIBLE);
-        }else if(v.getId()==R.id.bt3){
-            wv.setVisibility(View.INVISIBLE);
-            ll.setVisibility(View.INVISIBLE);
-            iv.setVisibility(View.VISIBLE);
+
+    public void onClickBnt(View v) {
+        switch (v.getId()) {
+            case R.id.btn1 :
+                wb_vw.setVisibility(View.VISIBLE);
+                wb_vw.loadUrl("http://www.naver.com");
+                lnr_lyt.setVisibility(View.INVISIBLE);
+                img_vw.setVisibility(View.INVISIBLE);
+                break;
+            case R.id.btn2 :
+                wb_vw.setVisibility(View.INVISIBLE);
+                lnr_lyt.setVisibility(View.VISIBLE);
+                img_vw.setVisibility(View.INVISIBLE);
+                break;
+            case R.id.btn3 :
+                wb_vw.setVisibility(View.INVISIBLE);
+                lnr_lyt.setVisibility(View.INVISIBLE);
+                img_vw.setVisibility(View.VISIBLE);
+                break;
         }
     }
 }

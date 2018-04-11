@@ -4,60 +4,61 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="	#9370DB"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="54dp"
-        android:layout_marginTop="72dp"
-        android:text="ID"
-        android:textSize="40dp" />
-
-    <EditText
-        android:id="@+id/tx_id"
-        android:layout_width="134dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/textView"
-        android:layout_marginStart="125dp"
-        android:ems="10"
-        android:hint="inputid"
-        android:inputType="textPersonName"
-        android:textSize="30dp" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/textView"
-        android:layout_marginTop="172dp"
-        android:text="PWD"
-        android:textSize="30dp" />
-
-    <EditText
-        android:id="@+id/tx_pwd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/tx_id"
-        android:layout_alignTop="@+id/textView2"
-        android:ems="10"
-        android:hint="Inputpassword"
-        android:inputType="numberPassword" />
-
     <Button
-        android:id="@+id/bt_login"
+        android:id="@+id/btn_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="167dp"
-        android:onClick="clickLogin"
-        android:text="Login"
-        android:textSize="30dp" />
+        android:layout_marginTop="216dp"
+        android:background="@android:color/holo_green_light"
+        android:onClick="onClickLogin"
+        android:text="Login" />
+
+    <TextView
+        android:id="@+id/txt_v1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="51dp"
+        android:layout_marginTop="112dp"
+        android:text="ID"
+        android:textColor="@android:color/holo_orange_light"
+        android:textSize="22sp" />
+
+    <EditText
+        android:id="@+id/txt_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/txt_v1"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="69dp"
+        android:ems="10"
+        android:hint="Input ID"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/txt_v2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/txt_pwd"
+        android:layout_alignEnd="@+id/txt_v1"
+        android:text="PW"
+        android:textColor="@android:color/holo_orange_light"
+        android:textSize="22sp" />
+
+    <EditText
+        android:id="@+id/txt_pwd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/txt_id"
+        android:layout_below="@+id/txt_id"
+        android:ems="10"
+        android:hint="Input Password"
+        android:inputType="textPassword" />
 
 </RelativeLayout>

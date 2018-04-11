@@ -4,69 +4,67 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bmw"
-    android:gravity="fill_horizontal|center"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <HorizontalScrollView
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_weight="4">
 
-        <HorizontalScrollView
+        <ScrollView
+            android:id="@+id/scrl_vw1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_weight="4">
 
-            <ScrollView
+            <ImageView
+                android:id="@+id/img_vw1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/goldm4">
-
-            </ScrollView>
-        </HorizontalScrollView>
-
-    </LinearLayout>
+                app:srcCompat="@drawable/img2" />
+        </ScrollView>
+    </HorizontalScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/bt1"
+            android:id="@+id/btn2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:drawable/arrow_down_float"
-            android:text="DOWN" />
+            android:layout_weight="0"
+            android:onClick="onClickBtn"
+            android:text="Button" />
 
         <Button
-            android:id="@+id/bt2"
+            android:id="@+id/btn1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:drawable/arrow_up_float"
-            android:text="UP" />
+            android:layout_weight="0"
+            android:onClick="onClickBtn"
+            android:text="Button" />
     </LinearLayout>
 
-    <LinearLayout
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:layout_weight="4">
 
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <ScrollView
+            android:id="@+id/scrl_vw2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="4">
 
-            <ScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@drawable/bluem4">
-
-            </ScrollView>
-        </HorizontalScrollView>
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/img_vw2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </ScrollView>
+    </HorizontalScrollView>
 </LinearLayout>

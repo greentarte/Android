@@ -12,7 +12,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-    public void onButtonClicked(View v){
-        Toast.makeText(this, "toast", Toast.LENGTH_SHORT).show();
+
+    public void onButton1Clicked(View v) {
+        Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show();
+
     }
 }

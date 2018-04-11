@@ -14,18 +14,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-    public void bt1click(View v){
-        Toast.makeText(this, "bt1", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.naver.com"));
-        startActivity(intent);
+
+    public void btn1click(View v) {
+        //Toast.makeText(this, "btn1", Toast.LENGTH_SHORT).show();
+        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.naver.com"));
+        startActivity(myIntent);
     }
-    public void bt2click(View v){
-        Toast.makeText(this, "bt2", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:010-1000-1000"));
-        startActivity(intent);
+    public void btn2click(View v) {
+        Intent myIntent = new Intent(getApplicationContext(), testActivity.class);
+        startActivity(myIntent);
     }
-    public void bt3click(View v){
-        Intent intent = new Intent(getApplicationContext(),Main2Activity.class);
-        startActivity(intent);
+    public void btn3click(View v) {
+        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:010-5195-1232"));
+        startActivity(myIntent);
     }
+
 }

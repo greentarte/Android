@@ -8,55 +8,54 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
-    Button bt1,bt2,bt3,bt4;
-
-
-//실행영역 시작
+    Button btn1, btn2, btn3, btn4;
+    boolean btnFlag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); //화면에 뿌리
-        //R = resource 약자 R=res
-        makeui();
+        setContentView(R.layout.activity_main);
+        initUI();
+    }
+    public void initUI(){
+        btn1 = findViewById(R.id.btn1);
+        btn2 = findViewById(R.id.btn2);
+        btn3 = findViewById(R.id.btn3);
+        btn4 = findViewById(R.id.btn4);
+
+        btn2.setEnabled(btnFlag);
+        btn3.setEnabled(btnFlag);
+        btn4.setEnabled(btnFlag);
+
+        /*btn2.setVisibility(View.INVISIBLE);
+        btn3.setVisibility(View.INVISIBLE);
+        btn4.setVisibility(View.INVISIBLE);*/
 
     }
-    public void makeui(){
-        bt1= findViewById(R.id.bt1);
-        bt2= findViewById(R.id.bt2);
-        bt3= findViewById(R.id.bt3);
-        bt4= findViewById(R.id.bt4);
+    public void startbtn(View v) {
+        btn1.setText("STOP");
+        btnFlag = !btnFlag;
+        btn2.setEnabled(btnFlag);
+        btn3.setEnabled(btnFlag);
+        btn4.setEnabled(btnFlag);
 
-        bt2.setEnabled(false);
-        bt3.setEnabled(false);
-        bt4.setEnabled(false);
+        /*btn2.setVisibility(View.VISIBLE);
+        btn3.setVisibility(View.VISIBLE);
+        btn4.setVisibility(View.VISIBLE);*/
+    }
 
+    public void click1(View v) {
+        Intent myIntent = new Intent(getApplicationContext(), SecondActivity.class);
+        startActivity(myIntent);
+    }
 
-//        bt2.setVisibility(View.INVISIBLE);
-//        bt3.setVisibility(View.INVISIBLE);
-//        bt4.setVisibility(View.INVISIBLE);
+    public void click2(View v) {
+        Intent myIntent = new Intent(getApplicationContext(), ThirdActivity.class);
+        startActivity(myIntent);
     }
-    //실행영역 끝
-    public void startbt(View v){
-        bt2.setEnabled(true);
-        bt3.setEnabled(true);
-        bt4.setEnabled(true);
-//        bt2.setVisibility(View.VISIBLE);
-//        bt3.setVisibility(View.VISIBLE);
-//        bt4.setVisibility(View.VISIBLE);
-    }
-    public void clikc1bt(View v){
-        Intent intent = new Intent(getApplicationContext(),Main2Activity.class);
-        startActivity(intent);
-    }
-    public void clikc2bt(View v){
-        Intent intent = new Intent(getApplicationContext(),Main3Activity.class);
-        startActivity(intent);
 
-    }
-    public void click3bt(View v){
-        Intent intent = new Intent(getApplicationContext(),Main4Activity.class);
-        startActivity(intent);
+    public void click3(View v) {
+        Intent myIntent = new Intent(getApplicationContext(), FourthActivity.class);
+        startActivity(myIntent);
     }
 
     @Override

@@ -4,39 +4,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
+    android:background="@drawable/bgimg"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/bt1"
+        android:id="@+id/btn1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="startbt"
+        android:onClick="startbtn"
         android:text="Start"
         android:textSize="30dp" />
 
     <Button
-        android:id="@+id/bt2"
+        android:id="@+id/btn2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="clikc1bt"
-        android:text="Click1"
-        android:textSize="30dp" />
+        android:onClick="click1"
+        android:text="Click1" />
 
     <Button
-        android:id="@+id/bt3"
+        android:id="@+id/btn3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="clikc2bt"
-        android:text="Click2"
-        android:textSize="30dp" />
+        android:onClick="click2"
+        android:text="Click2" />
 
     <Button
-        android:id="@+id/bt4"
+        android:id="@+id/btn4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="click3bt"
-        android:text="Click3"
-        android:textSize="30dp" />
+        android:onClick="click3"
+        android:text="Click3" />
 </LinearLayout>

@@ -16,8 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".LoginfailActivity"></activity>
+        <activity android:name=".loginOK" />
+        <activity android:name=".loginFail"></activity>
     </application>
 
 </manifest>

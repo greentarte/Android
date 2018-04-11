@@ -9,35 +9,32 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    EditText tx_id,tx_pwd;
-    Button bt_login;
-
+    EditText txt_id, txt_pwd;
+    Button btn_login;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        makeUi();
+        initUI();
     }
-    public void makeUi(){
-        tx_id=findViewById(R.id.tx_id);
-        tx_pwd=findViewById(R.id.tx_pwd);
-        bt_login=findViewById(R.id.bt_login);
+    public void initUI() {
+        txt_id = findViewById(R.id.txt_id);
+        txt_pwd = findViewById(R.id.txt_pwd);
     }
-    public void clickLogin(View v){
-        //textedit에서 값을 가지고 온다.
-        String id =tx_id.getText().toString();
-        String pwd=tx_pwd.getText().toString();
-        tx_id.setText("");
-        tx_pwd.setText("");
-        Intent intent = null;
-        if(id.equals("qq")&&pwd.equals("11")){
-intent=new Intent(getApplicationContext(),LoginActivity.class);
-intent.putExtra("loginid",id);
-        }else{
-intent=new Intent(getApplicationContext(),LoginfailActivity.class);
+    public void onClickLogin(View v) {
+        String id = txt_id.getText().toString();
+        String pwd = txt_pwd.getText().toString();
+        Intent myIntent;
+        txt_id.setText("");
+        txt_pwd.setText("");
+        Toast.makeText(this, id+""+pwd, Toast.LENGTH_LONG).show();
+        if(id.equals("qq") && pwd.equals("11")) {
+            myIntent = new Intent(getApplicationContext(), loginOK.class);
+            myIntent.putExtra("loginID", id);
+        } else {
+            myIntent = new Intent(getApplicationContext(), loginFail.class);
         }
-startActivity(intent);
-
-
+        startActivity(myIntent);
     }
+
 }

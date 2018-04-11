@@ -4,28 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
-    android:orientation="vertical"
+    android:background="@drawable/bgimg"
+    android:orientation="horizontal"
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/bt1"
-        android:layout_width="match_parent"
+        android:id="@+id/btn1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="bt1click"
-        android:text="Naver" />
+        android:layout_weight="1"
+        android:onClick="btn1click"
+        android:text="NAVER" />
 
     <Button
-        android:id="@+id/bt2"
-        android:layout_width="match_parent"
+        android:id="@+id/btn2"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="bt2click"
-        android:text="Daum" />
+        android:layout_weight="1"
+        android:onClick="btn2click"
+        android:text="test" />
 
     <Button
-        android:id="@+id/bt3"
-        android:layout_width="match_parent"
+        android:id="@+id/btn3"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="bt3click"
-        android:text="Google" />
+        android:layout_weight="1"
+        android:onClick="btn3click"
+        android:text="CALL" />
+
 </LinearLayout>
