@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             String pwd = strings[1];
             String result = "";
             try {
-                Thread.sleep(2000);
+                Thread.sleep(30000);
                 //2초 딜레이
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             progressDialog.dismiss();
             button.setEnabled(true);
-            AlertDialog.Builder dialog= new AlertDialog.Builder(MainActivity.this);
+            AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
             // 클로즈
             if (s.equals("1")) {
                 textView.setText("Login OK");
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                 });
-                AlertDialog alert =dialog.create();
+                AlertDialog alert = dialog.create();
                 alert.show();
             } else {
                 textView.setText("Login Fail!");
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                 });
-                AlertDialog alert =dialog.create();
+                AlertDialog alert = dialog.create();
                 alert.show();
 
             }
