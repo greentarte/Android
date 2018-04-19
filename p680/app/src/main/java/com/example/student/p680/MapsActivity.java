@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,34 +33,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
         txtv = findViewById(R.id.txtv);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            //Request Check Permission
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            }, 1);
+            Toast.makeText(this, "FINE_location", Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+            }, 1);
+            Toast.makeText(this, "COARSE_location", Toast.LENGTH_SHORT).show();
+
+        } else {
+            Toast.makeText(this, "Checked", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
 
     public void onClickBtn(View v) {
         switch (v.getId()) {
-            case R.id.btn1 :
+            case R.id.btn1:
                 requestMyLocation();
                 break;
-            case R.id.btn_busan :
-                setLocation("부산", 35.1644465,129.1551213);
+            case R.id.btn_busan:
+                setLocation("부산", 35.1644465, 129.1551213);
                 break;
-            case R.id.btn_guwangju :
-                setLocation("광주", 35.1600896,126.8495911);
+            case R.id.btn_guwangju:
+                setLocation("광주", 35.1600896, 126.8495911);
                 break;
         }
     }
@@ -79,26 +83,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng m1 = new LatLng(37.5012319,127.0396087);
-        LatLng m2 = new LatLng(37.500555,127.034908);
-        LatLng m3 = new LatLng(37.501155,127.031258);
+        LatLng m1 = new LatLng(37.5012319, 127.0396087);
+        LatLng m2 = new LatLng(37.500555, 127.034908);
+        LatLng m3 = new LatLng(37.501155, 127.031258);
         mMap.addMarker(new MarkerOptions().position(m1).title("Marker in MultiCampus").icon(BitmapDescriptorFactory.fromResource(R.mipmap.chicken_icon)));
         mMap.addMarker(new MarkerOptions().position(m2).title("Marker in M2").icon(BitmapDescriptorFactory.fromResource(R.mipmap.chicken_icon)));
         mMap.addMarker(new MarkerOptions().position(m3).title("Marker in M3").icon(BitmapDescriptorFactory.fromResource(R.mipmap.chicken_icon)));
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(m1));
 
-/*        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            
             return;
         }
-        mMap.setMyLocationEnabled(true);*/
+        mMap.setMyLocationEnabled(true);
     }
+
 
     private void requestMyLocation() {
         LocationManager manager =
@@ -166,12 +165,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
             );
 
-        } catch(SecurityException e) {
+        } catch (SecurityException e) {
             e.printStackTrace();
         }
     }
 
-    private void setLocation(String name, double latitude, double longitude){
+    private void setLocation(String name, double latitude, double longitude) {
         Location location = new Location(name);
         location.setLatitude(latitude);
         location.setLongitude(longitude);
@@ -180,10 +179,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void showCurrentLocation(Location location) {
         LatLng curPoint = new LatLng(location.getLatitude(), location.getLongitude());
-        if(mOpt == null) {
+        if (mOpt == null) {
             mOpt = new MarkerOptions();
         }
-        txtv.setText(location.getLatitude()+ " " + location.getLongitude());
+
+        txtv.setText(location.getLatitude() + " " + location.getLongitude());
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(curPoint, 15));
     }
 }
