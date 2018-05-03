@@ -1,137 +1,166 @@
 package com.example.student.p230;
 
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalTime;
-import java.util.Calendar;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
-    ImageView img_vw;
-    WebView wb_vw;
-    LinearLayout btn_lyt;
-    RelativeLayout rgst_lyt;
-    RelativeLayout login_lyt;
-    TextView txt_time;
-    Date day;
-    Calendar cal;
-    SimpleDateFormat sdf;
-    Handler handler;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        initUI();
-    }
+        LinearLayout ll;
+        RelativeLayout rl_apply,rl_login;
+        Button bt_naver;
+        WebView wv;
+        EditText tx_loginid, tx_loginpw, tx_applyid, tx_applypw;
+        String id="";
+        String pwd="";
+        TextView tx_time;
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
+            makeUI();
+            getTime();
+        }
+        public void makeUI(){
+            ll=findViewById(R.id.ll);
+            bt_naver=findViewById(R.id.bt_naver);
+            wv=findViewById(R.id.wv);
+            rl_apply=findViewById(R.id.rl_apply);
+            rl_login=findViewById(R.id.rl_login);
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Thread timeText = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        handler.sendMessage(handler.obtainMessage());
+
+            wv.getSettings().setJavaScriptEnabled(true);
+
+            wv.setVisibility(View.INVISIBLE);
+            rl_apply.setVisibility(View.INVISIBLE);
+            rl_login.setVisibility(View.INVISIBLE);
+            ll.setVisibility(View.VISIBLE);
+            bt_naver.setVisibility(View.VISIBLE);
+
+            wv.setWebViewClient(new WebViewClient());
+
+
+    }
+    public void getTime(){
+        tx_time=findViewById(R.id.tx_time);
+
+
+        Thread thread = new Thread(){
+            public void run(){
+                while(!isInterrupted()){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            Date d = new Date();
+                            String time = sdf.format(d);
+                            tx_time.setText(time);
+                        }
+                    });
+                    try{
                         Thread.sleep(1000);
-                    } catch (Exception e) {
+                    }catch (InterruptedException e){
                         e.printStackTrace();
                     }
                 }
             }
-        });
-        timeText.start();
-    }
-
-    public void initUI() {
-        img_vw = findViewById(R.id.img_vw);
-        wb_vw = findViewById(R.id.wb_vw);
-        btn_lyt = findViewById(R.id.btn_lyt);
-        rgst_lyt = findViewById(R.id.rgst_lyt);
-        login_lyt = findViewById(R.id.login_lyt);
-        txt_time = findViewById(R.id.txt_time);
-        sdf = new SimpleDateFormat("hh:mm:ss a");
-        wb_vw.setWebViewClient(new WebViewClient());
-        wb_vw.getSettings().setJavaScriptEnabled(true);
-
-        wb_vw.setVisibility(View.INVISIBLE);
-        img_vw.setVisibility(View.INVISIBLE);
-        rgst_lyt.setVisibility(View.INVISIBLE);
-        login_lyt.setVisibility(View.INVISIBLE);
-
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                updateTime();
-            }
         };
 
-    }
+        thread.start();
 
-    public void onClickBnt(View v) {
-        switch (v.getId()) {
-            case R.id.btn_home :
-                wb_vw.setVisibility(View.INVISIBLE);
-                btn_lyt.setVisibility(View.VISIBLE);
-                img_vw.setVisibility(View.INVISIBLE);
-                rgst_lyt.setVisibility(View.INVISIBLE);
-                login_lyt.setVisibility(View.INVISIBLE);
-                break;
-            case R.id.btn_register :
-                wb_vw.setVisibility(View.INVISIBLE);
-                btn_lyt.setVisibility(View.INVISIBLE);
-                img_vw.setVisibility(View.INVISIBLE);
-                rgst_lyt.setVisibility(View.VISIBLE);
-                login_lyt.setVisibility(View.INVISIBLE);
-                break;
-            case R.id.btn_login :
-                wb_vw.setVisibility(View.INVISIBLE);
-                btn_lyt.setVisibility(View.INVISIBLE);
-                img_vw.setVisibility(View.INVISIBLE);
-                rgst_lyt.setVisibility(View.INVISIBLE);
-                login_lyt.setVisibility(View.VISIBLE);
-                break;
-            case R.id.btn_analysis :
-                wb_vw.setVisibility(View.INVISIBLE);
-                btn_lyt.setVisibility(View.INVISIBLE);
-                img_vw.setVisibility(View.VISIBLE);
-                rgst_lyt.setVisibility(View.INVISIBLE);
-                login_lyt.setVisibility(View.INVISIBLE);
-                break;
-            case R.id.btn_naver :
-                wb_vw.setVisibility(View.VISIBLE);
-                wb_vw.loadUrl("http://m.naver.com");
-                btn_lyt.setVisibility(View.INVISIBLE);
-                img_vw.setVisibility(View.INVISIBLE);
-                rgst_lyt.setVisibility(View.INVISIBLE);
-                login_lyt.setVisibility(View.INVISIBLE);
-                break;
+    }
+    public void clickBtn(View v){
+            //홈
+        if(v.getId()==R.id.bt_home){
+            //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            //makeUI();
+            //startActivity(intent);
+            wv.setVisibility(View.INVISIBLE);
+            rl_apply.setVisibility(View.INVISIBLE);
+            rl_login.setVisibility(View.INVISIBLE);
+            ll.setVisibility(View.VISIBLE);
+            bt_naver.setVisibility(View.VISIBLE);
+        }
+        //네이버
+        else if(v.getId()==R.id.bt_naver){
+            wv.setVisibility(View.VISIBLE);
+            wv.loadUrl("http://www.naver.com");
+            ll.setVisibility(View.INVISIBLE);
+            bt_naver.setVisibility(View.INVISIBLE);
+            rl_apply.setVisibility(View.INVISIBLE);
+            rl_login.setVisibility(View.INVISIBLE);
+        }
+        //회원가입
+        else if(v.getId()==R.id.bt_apply){
+            wv.setVisibility(View.INVISIBLE);
+            rl_apply.setVisibility(View.VISIBLE);
+            ll.setVisibility(View.INVISIBLE);
+            bt_naver.setVisibility(View.INVISIBLE);
+            rl_login.setVisibility(View.INVISIBLE);
+        }
+        //분석
+        else if(v.getId()==R.id.bt_analy){
+            wv.setVisibility(View.VISIBLE);
+            wv.loadUrl("http://70.12.114.149/mv");
+            ll.setVisibility(View.INVISIBLE);
+            bt_naver.setVisibility(View.INVISIBLE);
+            rl_apply.setVisibility(View.INVISIBLE);
+            rl_login.setVisibility(View.INVISIBLE);
+        }
+        //로그인
+        else if(v.getId()==R.id.bt_login){
+            wv.setVisibility(View.INVISIBLE);
+            rl_apply.setVisibility(View.INVISIBLE);
+            ll.setVisibility(View.INVISIBLE);
+            bt_naver.setVisibility(View.INVISIBLE);
+            rl_login.setVisibility(View.VISIBLE);
+        }
+
+        else if(v.getId()==R.id.bt_dologin){
+            getLoginID();
+        }
+        else if(v.getId()==R.id.bt_doapply){
+            getApplyID();
         }
     }
 
-    public void onClickWebGoBack(View v) {
-        if(wb_vw.canGoBack() && wb_vw.getVisibility() == View.VISIBLE) {
-            wb_vw.goBack();
-        }
-    }
+    public void getApplyID(){
 
-    private void updateTime() {
-        cal = Calendar.getInstance();
-        day = cal.getTime();
-        txt_time.setText(sdf.format(day));
+            tx_applyid = findViewById(R.id.tx_applyid);
+            tx_applypw = findViewById(R.id.tx_applypw);
+            id = tx_applyid.getText().toString();
+            pwd = tx_applypw.getText().toString();
+            if(id!=null && !pwd.equals("")) {
+                tx_applyid.setText("");
+                tx_applypw.setText("");
+                Toast.makeText(this, "가입완료 : " + id + "     " + pwd, Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "뭐라도 입력해주세요." + pwd, Toast.LENGTH_SHORT).show();
+            }
+
+    }
+    public void getLoginID(){
+            tx_loginid=findViewById(R.id.tx_loginid);
+            tx_loginpw=findViewById(R.id.tx_loginpw);
+            String testid = tx_loginid.getText().toString();
+            String testpw = tx_loginpw.getText().toString();
+            //Toast.makeText(this, id+"     "+pwd,Toast.LENGTH_SHORT).show();
+            if(testid.equals(id) && testpw.equals(pwd)){
+                Toast.makeText(this,"로그인 성공", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(this,"id, pw가 틀렸습니다. 누구세염.", Toast.LENGTH_SHORT).show();
+            }
     }
 }

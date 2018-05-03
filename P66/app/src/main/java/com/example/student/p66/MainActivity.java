@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(myIntent);
     }
     public void btn3click(View v) {
-        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:010-5195-1232"));
+        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:010-0000-0000"));
         startActivity(myIntent);
     }
 
