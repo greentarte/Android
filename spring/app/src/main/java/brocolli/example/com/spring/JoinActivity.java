@@ -13,12 +13,13 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class JoinActivity extends AppCompatActivity {
 
-    EditText editText1,editText2,editText3;
+    EditText email1, pwd1, name1, publicdistance1, personalmileage1;
     ProgressDialog progressDialog;
     LoginTask loginTask;
     Intent intent;
@@ -28,31 +29,43 @@ public class JoinActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join);
 
-
-        editText1 = findViewById(R.id.editText3);
-        editText2 = findViewById(R.id.editText4);
-        editText3 = findViewById(R.id.editText5);
+        email1 = findViewById(R.id.email);
+        pwd1 = findViewById(R.id.pwd);
+        name1 = findViewById(R.id.name);
+        publicdistance1 = findViewById(R.id.publicdistance);
+        personalmileage1 = findViewById(R.id.personalmileage);
         progressDialog = new ProgressDialog(JoinActivity.this);
 
     }
 
 
-    public void clickBt(View v){
+    public void clickBt(View v) {
 
-        String id = editText1.getText().toString().trim();
-        String pwd = editText2.getText().toString().trim();
-        String name = editText3.getText().toString().trim();
-        if (id == null || pwd == null || name == null ||id.equals("") || pwd.equals("") || name.equals("")) {
+        String email = email1.getText().toString().trim();
+        String pwd = pwd1.getText().toString().trim();
+        //한글입력 오류 안나는 코드 시작
+        String str = name1.getText().toString().trim();
+        String name = null;
+        try {
+            name = java.net.URLEncoder.encode(new String(str.getBytes("UTF-8")));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        //한글입력 오류 안나는 코드 종료
+
+        String publicdistance = publicdistance1.getText().toString().trim();
+        String personalmileage = personalmileage1.getText().toString().trim();
+
+        if (email == null || pwd == null || name == null || publicdistance == null || personalmileage == null || email.equals("") || pwd.equals("") || name.equals("") || publicdistance.equals("") || personalmileage.equals("")) {
             return;
         }
-        loginTask = new LoginTask("http://70.12.114.136/mv/join.do?id="+id+"&pwd="+pwd+"&name="+name);
+        loginTask = new LoginTask("http://70.12.114.147/ws/join.do?email=" + email + "&pwd=" + pwd+"&publicDistance="+publicdistance+"&personalMileage="+personalmileage + "&name=" + name);
         loginTask.execute();
 
     }
 
 
-
-    class LoginTask extends AsyncTask<String,Void,String> {
+    class LoginTask extends AsyncTask<String, Void, String> {
 
         String url;
 
@@ -77,28 +90,27 @@ public class JoinActivity extends AppCompatActivity {
             //http request
             StringBuilder sb = new StringBuilder();
             URL url;
-            HttpURLConnection con= null;
+            HttpURLConnection con = null;
             BufferedReader reader = null;
 
-            try{
+            try {
                 url = new URL(this.url);
                 con = (HttpURLConnection) url.openConnection();
 
-                if(con!=null){
+                if (con != null) {
                     con.setConnectTimeout(10000);   //connection 5초이상 길어지면 exepction
                     //con.setReadTimeout(10000);
                     con.setRequestMethod("GET");
-                    con.setRequestProperty("Accept","*/*");
-                    if(con.getResponseCode()!=HttpURLConnection.HTTP_OK)
+                    con.setRequestProperty("Accept", "*/*");
+                    if (con.getResponseCode() != HttpURLConnection.HTTP_OK)
                         return null;
-
 
 
                     reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
                     String line = null;
-                    while(true){
+                    while (true) {
                         line = reader.readLine();
-                        if(line == null){
+                        if (line == null) {
                             break;
                         }
                         sb.append(line);
@@ -108,15 +120,14 @@ public class JoinActivity extends AppCompatActivity {
                 }
 
 
-
-            }catch(Exception e){
+            } catch (Exception e) {
                 progressDialog.dismiss();
                 return e.getMessage();   //리턴하면 post로
 
-            }finally {
+            } finally {
 
                 try {
-                    if(reader!= null) {
+                    if (reader != null) {
                         reader.close();
                     }
                 } catch (IOException e) {
@@ -136,28 +147,26 @@ public class JoinActivity extends AppCompatActivity {
             progressDialog.dismiss();
 
 
-            if(s.equals("1")) {
-                Toast.makeText(JoinActivity.this, "회원가입 성공" , Toast.LENGTH_SHORT).show();
-                intent = new Intent(getApplicationContext(),MainActivity.class);
+            if (s.equals("1")) {
+                Toast.makeText(JoinActivity.this, "회원가입 성공", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
 
+            } else {
+
+                Toast.makeText(JoinActivity.this, "회원가입 실패", Toast.LENGTH_SHORT).show();
+                email1.setText("");
+                pwd1.setText("");
+                name1.setText("");
+                publicdistance1.setText("");
+                personalmileage1.setText("");
+
             }
-            else{
-
-                Toast.makeText(JoinActivity.this, "회원가입 실패" , Toast.LENGTH_SHORT).show();
-                editText1.setText("");
-                editText2.setText("");
-                editText3.setText("");
-
-            }
-
-
 
 
         }
 
     } //LoginTask
-
 
 
 }

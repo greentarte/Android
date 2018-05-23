@@ -1,23 +1,21 @@
 package brocolli.example.com.spring;
 
 
-
 import android.app.ProgressDialog;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.style.UnderlineSpan;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TabHost;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -25,54 +23,95 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText editText1, editText2;
+    TextView textView;
     ProgressDialog progressDialog;
     LoginTask loginTask;
-    Intent intent;
+    WebView webView;
     private SharedPreferences sf;
-    String email = "";
-    TextView textView1, textView2;
+    String id = "";
+    Intent intent;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        editText1 = findViewById(R.id.editText1);
-        editText2 = findViewById(R.id.editText2);
+
+//        Intent initIntent = new Intent(MainActivity.this, LoginActivity.class);
+//        startActivity(initIntent);
+
         progressDialog = new ProgressDialog(MainActivity.this);
+        textView = findViewById(R.id.textView1);
+
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        textView.setText(name + "님 안녕하세요:)");
+
 
         sf = getSharedPreferences("loginData", MODE_PRIVATE);
+        id = sf.getString("id", "");
 
-        textView1 = findViewById(R.id.textView1);
-        SpannableString content = new SpannableString("Sing up");
-        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-        textView1.setText(content);
+        webView = findViewById(R.id.webView);
+        webView.setVisibility(View.INVISIBLE);
 
-        textView2 = findViewById(R.id.textView2);
-        SpannableString content2 = new SpannableString("Reset password");
-        content2.setSpan(new UnderlineSpan(), 0, content2.length(), 0);
-        textView2.setText(content2);
+
     }
 
 
-    public void clickBt(View v) {
+    public void clickButton(View v) {
 
-        email = editText1.getText().toString().trim();
-        String pwd = editText2.getText().toString().trim();
-        if (email == null || pwd == null || email.equals("") || pwd.equals("")) {
-            return;
+
+        switch (v.getId()) {
+            case R.id.button:
+                loginTask = new LoginTask("http://70.12.114.136/mv/insertData9.do?id=" + id + "&time_nine=1");
+                loginTask.execute();
+                break;
+
+            case R.id.button2:
+                loginTask = new LoginTask("http://70.12.114.136/mv/updateData2.do?id=" + id + "&time_two=1");
+                loginTask.execute();
+                break;
+
+            case R.id.button3:
+                loginTask = new LoginTask("http://70.12.114.136/mv/updateData6.do?id=" + id + "&time_six=1");
+                loginTask.execute();
+                break;
+
+            case R.id.button4:
+                loginTask = new LoginTask("http://70.12.114.136/mv/extractData.do?id=" + id + "&month=12");
+                loginTask.execute();
+                break;
+
+            case R.id.button5:
+                webView.setVisibility(View.VISIBLE);
+                webView.setWebViewClient(new WebViewClient());
+                webView.loadUrl("http://70.12.114.136/mv/view/android.jsp?id=" + id);
+                webView.invalidate();
+                break;
+
+
+            case R.id.button6:
+
+                break;
+
+            case R.id.button7:
+                logout();
+                intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+                break;
+
         }
-        loginTask = new LoginTask("http://70.12.114.148/springTest/login.do?email=" + email + "&pwd=" + pwd);
-        loginTask.execute();
-
     }
 
 
-    public void clickBt2(View v) {
+    private void logout() {
 
-        intent = new Intent(MainActivity.this, JoinActivity.class);
-        startActivity(intent);
+        SharedPreferences.Editor editor = sf.edit();
+        editor.putString("id", "");
+        editor.commit();
 
     }
 
@@ -91,12 +130,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            progressDialog.setMessage("Login");
+            progressDialog.setMessage("");
             progressDialog.show();
         }
 
         @Override
         protected String doInBackground(String... strings) {
+
 
             //http request
             StringBuilder sb = new StringBuilder();
@@ -157,45 +197,12 @@ public class MainActivity extends AppCompatActivity {
 
             progressDialog.dismiss();
 
-
-            if (s.charAt(0) == '1') {
-
-                saveLoginData(); //아이디 값 sharedpreferences 저장함수
-                Toast.makeText(MainActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
-
-                editText1.setText("");
-                editText2.setText("");
-
-                Intent intent = new Intent(MainActivity.this, ShowActivity.class);
-                intent.putExtra("name", s.substring(2));
-                startActivity(intent);
-
-            } else {
-
-                editText1.setText("");
-                editText2.setText("");
-                Toast.makeText(MainActivity.this, "Login Fail", Toast.LENGTH_SHORT).show();
-
-            }
-
+            Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
 
         }
 
-    }
-
-
-    private void saveLoginData() {
-
-
-        SharedPreferences.Editor editor = sf.edit();
-        editor.putString("email", email);
-        editor.commit();
 
     }
 
 
 }
-
-
-
-

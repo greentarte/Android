@@ -3,4 +3,5 @@
     <!--밑줄긋기-->
     <string name="textView1">spring</string>
     <string name="textView2">spring</string>
+    <string name="title_activity_reset">Reset</string>
 </resources>
