@@ -1,17 +1,19 @@
-package com.example.student.cluster;
+package com.example.student.evproject;
 
-
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
-
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-
+import android.view.View;
 import android.view.WindowManager;
-
+import android.webkit.WebView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ServerSocket;
@@ -35,21 +36,26 @@ import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView textView, textView2, textView3; //textView3 추가 0524
+    ImageView beam_low, beam_high, beam_fog, beam_backfog, warning_battery, warning_parkbreak, warning_belt, warning_repair;
+    int bl, bh, bf, bb = 0;
+    TextView textView, testbattery;
+    TextView mainParking, mainReverse, mainNeutral, mainDrive;
     TextView start_km, start_mm, start_whkm, charging_km, charging_kwh, charging_whkm, month_km, month_kwh, month_whkm, total_mileage;
     ViewPager viewPager;
-
     Server server;
     boolean flag = true;
+    ImageView battery;
+    FloatingActionButton fab;
 
     Handler handler = new Handler(); // start_mm 갱신
     private int mm = 0;
     private String time = "";
+    int beam_onoff = 0;
 
-    int total_capacity = 90; //자동차의 배터리용량
+    double total_capacity = 90; //자동차의 배터리용량
     int lastCharge_capacity = 80; // 최근 충전종료시 배터리 용량
     int start_capacity = 80; //처음 시동시 배터리 용량
-    int now_capacity = 80;  //현재 자동차의 배터리 용량
+    double now_capacity = 80;  //현재 자동차의 배터리 용량
     double publicMileage = 3.9; //공인연비 3.9km/kWh;
     int startkm = 0;
     double startwhkm = 0;
@@ -61,12 +67,9 @@ public class MainActivity extends AppCompatActivity {
     double monthwhkm = 220;
 
     int total_distance = 23433;
-    int battary_percent = now_capacity / total_capacity * 100;
+    double battary_percent= now_capacity/total_capacity*100;
 
-
-
-
-    //0524일 추가내용
+    //tablet to oracle
     String code = "GENSDE123"; //자동차 코드 최초에 1번만 받음
     int CHARGING_STATUS = 0; // 1--> 충전중 0-->충전X
     float LATITUDE = (float) 37.501348;
@@ -75,85 +78,126 @@ public class MainActivity extends AppCompatActivity {
     String updateurl;
     String user_name = "4team"; //한글안됨
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //상태바 제거
         setContentView(R.layout.activity_main);
-
-
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+/*        //loading Activity불러오기
+        Intent intent = new Intent(MainActivity.this, LoadingActivity.class);
+        startActivity(intent);
+
+        //login Activity 불러오기
+        Intent intent2 = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent2); */
 
         // 값 불러오기
+
+        //상태표시등
+        beam_low = findViewById(R.id.beam_low);
+        beam_high = findViewById(R.id.beam_high);
+        beam_fog = findViewById(R.id.beam_fog);
+        beam_backfog = findViewById(R.id.beam_backfog);
+        warning_battery = findViewById(R.id.warning_battery);
+        warning_parkbreak = findViewById(R.id.warning_parkbreak);
+        warning_belt = findViewById(R.id.warning_belt);
+        warning_repair = findViewById(R.id.warning_repair);
+
+        battery = findViewById(R.id.batteryview);
+
+        //시동이후
         start_km = findViewById(R.id.start_km);
         start_mm = findViewById(R.id.start_mm);
         start_whkm = findViewById(R.id.start_whkm);
 
+        //최근 충전 이후
         charging_km = findViewById(R.id.charging_km);
         charging_kwh = findViewById(R.id.charging_kwh);
         charging_whkm = findViewById(R.id.charging_whkm);
 
+        //월간
         month_km = findViewById(R.id.month_km);
         month_kwh = findViewById(R.id.month_kwh);
         month_whkm = findViewById(R.id.month_whkm);
 
+        //누적주행거리
         total_mileage = findViewById(R.id.total_mileage);
 
+        //속도
         textView = findViewById(R.id.textView);
-        textView2 = findViewById(R.id.textView2);
-        textView3 = findViewById(R.id.temperature); // 0524추기
 
+        //콘텐츠 페이지
         viewPager = findViewById(R.id.pager);
 
-        //CAN통신으로 값을 받아와서 입력되는 값
-
         int v = 60; //속도
-        textView.setText("" + v); //can값을 입력
-
-        final int indoor_temp = 20;  //0524 추가
-        textView3.setText("" + indoor_temp); //0524추가
+        textView.setText(""+v); //can값을 입력
 
         //배터리 퍼센테이지
-        String percent = "" + battary_percent;
+        String percent= ""+battary_percent;
+        testbattery = findViewById(R.id.testbattery);
+
+        //기어변속기 PRND
+        mainParking = findViewById(R.id.main_P);
+        mainDrive = findViewById(R.id.main_D);
+
+        mainDrive.setTextColor(Color.parseColor("#ffffff"));
+        mainParking.setTextColor(Color.parseColor("#aaaaaa"));
+
+        //fab
+        fab = (FloatingActionButton)findViewById(R.id.floatingActionButton);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent3 = new Intent(MainActivity.this, ControllActivity.class);
+                startActivity(intent3);
+            }
+        });
 
 
-        //
+
 
         //시동 후 시간 카운트
         final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (flag) {
+                while(flag){
                     try {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
                                 time = String.valueOf(mm);
                                 start_mm.setText(time);
-                                start_km.setText("" + startkm);
+                                testbattery.setText(String.valueOf((int)battary_percent));
+
+                                controlBeam();
+                                showBattery();
+
+                                start_km.setText(""+startkm);
                                 start_whkm.setText("" + startwhkm);
 
-                                String comma1 = String.format("%,d", chargekm);
+                                String comma1=String.format("%,d",chargekm);
                                 charging_km.setText(comma1);
                                 charging_kwh.setText("" + chargekwh);
                                 charging_whkm.setText("" + chargewhkm);
 
-                                String comma2 = String.format("%,d", monthkm);
+                                String comma2=String.format("%,d",monthkm);
                                 month_km.setText(comma2);
                                 month_kwh.setText("" + monthkwh);
                                 month_whkm.setText("" + monthwhkm);
-                                String comma3 = String.format("%,d", total_distance);
+                                String comma3=String.format("%,d",total_distance);
                                 total_mileage.setText(comma3);
-
-
 
                             }
                         });
-                        Thread.sleep(2000); // 1 분마다60000
+                        Thread.sleep(5000); // 1 분마다
                         mm += 1;
+
+                        beam_onoff += 1;
+
                         startkm += 6;
                         chargekm += 6;
                         monthkm += 6;
@@ -161,23 +205,21 @@ public class MainActivity extends AppCompatActivity {
                         //연비를 구해야함(시동 후 , 충전 후, 월간 후)
                         //시동 후 연비  (시동시 배터리용량-현재용량)*1000
                         startwhkm = 256.4; //공인연비 적용값
-                        now_capacity = start_capacity - ((int) (chargewhkm * startkm) / 1000);
+                        //now_capacity = start_capacity - ((int) (chargewhkm * startkm) / 1000);
+                        now_capacity -= 5;
                         chargekwh += ((int) (chargewhkm * startkm) / 1000);
                         monthkwh += ((int) (chargewhkm * startkm) / 1000);
-//                        chargewhkm=212.4; //임의값
-//                        monthwhkm=257.4; //임의값
-                        battary_percent = now_capacity / total_capacity * 100;
-
-
-                        //DB에 차량정보 업데이트
-                        //현재 주행가능거리
+//                      chargewhkm=212.4; //임의값
+//                      monthwhkm=257.4; //임의값
+                        battary_percent= now_capacity/total_capacity*100;
+//현재 주행가능거리
                         String AVAILABLE_DISTANCE = "" + (int) (now_capacity * 3.9);
+                        //DB에 차량정보 업데이트
                         updateurl = "http://70.12.114.147/ws/status_update.do?code=" + code + "&available_distance=" + AVAILABLE_DISTANCE + "&battery_capacity=" + now_capacity + "&indoor_temp=" + 20 + "&outdoor_temp=" + 15 + "&speed=" + 60+ "&charging_status=" + CHARGING_STATUS + "&charging_after_distance=" + chargekm + "&consumption_after_charging=" + chargekwh + "&monthly_distance=" + monthkm + "&monthly_battery_use=" + monthkwh + "&monthly_fuel_efficiency=" + monthwhkm + "&cumulative_mileage=" + total_distance + "&charge_amount=" + 80 + "&latitude=" + LATITUDE + "&longtitude=" + LONGTITUDE + "&model_name=" + MODEL_NAME  + "&user_name=" + user_name+ "&charging_after_fuel_efficiency=" + chargewhkm;
 
 
                         UpdateTask updateTask = new UpdateTask(updateurl);
                         updateTask.execute();
-
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -188,6 +230,10 @@ public class MainActivity extends AppCompatActivity {
         thread.start();
 
 
+        //Fragment 슬라이드 위해 adatper 호출
+       PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+
         //Server Start
         try {
             server = new Server();
@@ -197,8 +243,89 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Control 상태표시등
+    public void controlBeam(){
+        if(beam_onoff == 1){
+            beam_low.setVisibility(View.VISIBLE);
+            beam_high.setVisibility(View.INVISIBLE);
+            beam_fog.setVisibility(View.INVISIBLE);
+            beam_backfog.setVisibility(View.INVISIBLE);
 
-    public void setSpeed(final String msg) {
+            warning_battery.setVisibility(View.INVISIBLE);
+            warning_parkbreak.setVisibility(View.VISIBLE);
+            warning_belt.setVisibility(View.INVISIBLE);
+            warning_repair.setVisibility(View.INVISIBLE);
+        }
+        else if(beam_onoff == 2){
+            beam_low.setVisibility(View.INVISIBLE);
+            beam_high.setVisibility(View.VISIBLE);
+            beam_fog.setVisibility(View.INVISIBLE);
+            beam_backfog.setVisibility(View.INVISIBLE);
+
+            warning_battery.setVisibility(View.INVISIBLE);
+            warning_parkbreak.setVisibility(View.INVISIBLE);
+            warning_belt.setVisibility(View.VISIBLE);
+            warning_repair.setVisibility(View.INVISIBLE);
+        }
+        else if(beam_onoff == 3){
+            beam_low.setVisibility(View.INVISIBLE);
+            beam_high.setVisibility(View.INVISIBLE);
+            beam_fog.setVisibility(View.VISIBLE);
+            beam_backfog.setVisibility(View.INVISIBLE);
+
+            warning_battery.setVisibility(View.INVISIBLE);
+            warning_parkbreak.setVisibility(View.INVISIBLE);
+            warning_belt.setVisibility(View.INVISIBLE);
+            warning_repair.setVisibility(View.VISIBLE);
+        }
+        else if(beam_onoff == 4){
+            beam_low.setVisibility(View.INVISIBLE);
+            beam_high.setVisibility(View.INVISIBLE);
+            beam_fog.setVisibility(View.INVISIBLE);
+            beam_backfog.setVisibility(View.VISIBLE);
+
+            warning_battery.setVisibility(View.VISIBLE);
+            warning_parkbreak.setVisibility(View.INVISIBLE);
+            warning_belt.setVisibility(View.INVISIBLE);
+            warning_repair.setVisibility(View.INVISIBLE);
+
+            beam_onoff = 0;
+        }
+    }
+
+    //Battery 변경
+    public void showBattery(){
+        if(battary_percent < 100  && battary_percent >= 90){
+            battery.setImageResource(R.drawable.b90);
+        }else if(battary_percent < 90 && battary_percent >= 80){
+            battery.setImageResource(R.drawable.b80);
+        }else if(battary_percent < 80 && battary_percent >= 70){
+            battery.setImageResource(R.drawable.b70);
+        }else if(battary_percent < 70 && battary_percent >= 60){
+            battery.setImageResource(R.drawable.b60);
+        }else if(battary_percent < 60 && battary_percent >= 50){
+            battery.setImageResource(R.drawable.b50);
+        }else if(battary_percent < 50 && battary_percent >= 40){
+            battery.setImageResource(R.drawable.b40);
+        }else if(battary_percent < 40 && battary_percent >= 30){
+            battery.setImageResource(R.drawable.b30);
+        }else if(battary_percent < 30 && battary_percent >= 20){
+            battery.setImageResource(R.drawable.b20);
+        }else if(battary_percent < 20 && battary_percent >= 10){
+            battery.setImageResource(R.drawable.b10);
+        }else if(battary_percent <= 0){
+            battery.setImageResource(R.drawable.b0);
+        }
+    }
+
+    //ControllActivity로 이동
+
+    public void click_Control(View v){
+        Intent intent3 = new Intent(MainActivity.this, ControllActivity.class);
+        startActivity(intent3);
+    }
+
+    public void setSpeed(final String msg){
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -234,22 +361,18 @@ public class MainActivity extends AppCompatActivity {
 
     // HttpRequest Start ....
     // HttpRequest Start ....
-    class SendHttp extends AsyncTask<Void, Void, Void> {
+    class SendHttp extends AsyncTask<Void,Void,Void> {
 
-        String surl = "http://70.12.114.153/ws/main.do?speed=";
-        String updateurl;
+        String surl="http://70.12.114.153/ws/main.do?speed=";
         URL url;
         HttpURLConnection urlConn;
         String speed;
-
-        public SendHttp() {
-        }
-
-        public SendHttp(String speed) {
-            this.speed = speed;
-            surl += speed;
+        public SendHttp(){}
+        public SendHttp(String speed){
+            this.speed=speed;
+            surl+=speed;
             try {
-                url = new URL(surl);
+                url=new URL(surl);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -258,7 +381,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                urlConn = (HttpURLConnection) url.openConnection();
+                urlConn= (HttpURLConnection) url.openConnection();
                 urlConn.getResponseCode();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -273,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
 
     // ServerSocket Start .....
 
-    public class Server extends Thread {
+    public class Server extends Thread{
 
         ServerSocket serverSocket;
         boolean flag = true;
@@ -284,27 +407,27 @@ public class MainActivity extends AppCompatActivity {
         public Server() throws IOException {
             // Create ServerSocket ...
             serverSocket = new ServerSocket(8888);
-            Log.d("[Server]", "Ready Server...");
+            Log.d("[Server]","Ready Server...");
         }
 
         @Override
         public void run() {
             // Accept Client Connection ...
             try {
-                while (flag) {
-                    Log.d("[Server]", "Waiting Server...");
+                while(flag) {
+                    Log.d("[Server]","Waiting Server...");
                     Socket socket =
                             serverSocket.accept();
                     String client = socket.getInetAddress().getHostAddress();
                     //setConnect(client, "t");
                     new Receiver(socket).start();
                 }
-            } catch (Exception e) {
+            }catch(Exception e) {
                 e.printStackTrace();
             }
         }
 
-        class Receiver extends Thread {
+        class Receiver extends Thread{
 
             InputStream in;
             DataInputStream din;
@@ -322,7 +445,7 @@ public class MainActivity extends AppCompatActivity {
                     dout = new DataOutputStream(out);
                     ip = socket.getInetAddress().getHostAddress();
                     map.put(ip, dout);
-                    System.out.println("Connected Count:" + map.size());
+                    System.out.println("Connected Count:"+map.size());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -332,13 +455,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    while (rflag) {
+                    while(rflag) {
 
-                        if (socket.isConnected() &&
-                                din != null && din.available() > 0) {
+                        if(socket.isConnected() &&
+                                din != null && din.available() > 0 ) {
 
                             String str = din.readUTF();
-                            Log.d("[Server APP]", str);
+                            Log.d("[Server APP]",str);
                             setSpeed(str);
 
                             SendHttp sendHttp = new SendHttp(str);
@@ -346,7 +469,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                } catch (Exception e) {
+                }catch(Exception e) {
                     e.printStackTrace();
                 } finally {
                     //setConnect(null,"f");
@@ -355,21 +478,21 @@ public class MainActivity extends AppCompatActivity {
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }
-                    if (dout != null) {
+                    if(dout != null) {
                         try {
                             dout.close();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
-                    if (din != null) {
+                    if(din != null) {
                         try {
                             din.close();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
-                    if (socket != null) {
+                    if(socket != null) {
                         try {
                             socket.close();
                         } catch (IOException e) {
@@ -389,7 +512,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Send Message All Clients
-        class Sender extends Thread {
+        class Sender extends Thread{
 
             String msg;
 
@@ -404,11 +527,11 @@ public class MainActivity extends AppCompatActivity {
                             col = map.values();
                     Iterator<DataOutputStream>
                             it = col.iterator();
-                    while (it.hasNext()) {
+                    while(it.hasNext()) {
                         it.next().writeUTF(msg);
                     }
 
-                } catch (Exception e) {
+                }catch(Exception e) {
                     //e.printStackTrace();
                 }
             }
@@ -421,7 +544,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ServerSocket End .....
-
 
     class UpdateTask extends AsyncTask<String, Void, String> {
 
@@ -510,6 +632,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-    } //LoginTask
+    } //UpdateTask
 } // end MainActivity
 

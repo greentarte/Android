@@ -67,64 +67,64 @@ public class JoinActivity extends AppCompatActivity {
 
     class LoginTask extends AsyncTask<String, Void, String> {
 
-        String url;
+                    String url;
 
-        LoginTask() {
-        }
+                    LoginTask() {
+                    }
 
-        LoginTask(String url) {
-            this.url = url;
-        }
-
-
-        @Override
-        protected void onPreExecute() {
-            progressDialog.setMessage("SIGN UP");
-            progressDialog.show();
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-
-
-            //http request
-            StringBuilder sb = new StringBuilder();
-            URL url;
-            HttpURLConnection con = null;
-            BufferedReader reader = null;
-
-            try {
-                url = new URL(this.url);
-                con = (HttpURLConnection) url.openConnection();
-
-                if (con != null) {
-                    con.setConnectTimeout(10000);   //connection 5초이상 길어지면 exepction
-                    //con.setReadTimeout(10000);
-                    con.setRequestMethod("GET");
-                    con.setRequestProperty("Accept", "*/*");
-                    if (con.getResponseCode() != HttpURLConnection.HTTP_OK)
-                        return null;
-
-
-                    reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                    String line = null;
-                    while (true) {
-                        line = reader.readLine();
-                        if (line == null) {
-                            break;
-                        }
-                        sb.append(line);
+                    LoginTask(String url) {
+                        this.url = url;
                     }
 
 
-                }
+                    @Override
+                    protected void onPreExecute() {
+                        progressDialog.setMessage("SIGN UP");
+                        progressDialog.show();
+                    }
+
+                    @Override
+                    protected String doInBackground(String... strings) {
 
 
-            } catch (Exception e) {
-                progressDialog.dismiss();
-                return e.getMessage();   //리턴하면 post로
+                        //http request
+                        StringBuilder sb = new StringBuilder();
+                        URL url;
+                        HttpURLConnection con = null;
+                        BufferedReader reader = null;
 
-            } finally {
+                        try {
+                            url = new URL(this.url);
+                            con = (HttpURLConnection) url.openConnection();
+
+                            if (con != null) {
+                                con.setConnectTimeout(10000);   //connection 5초이상 길어지면 exepction
+                                //con.setReadTimeout(10000);
+                                con.setRequestMethod("GET");
+                                con.setRequestProperty("Accept", "*/*");
+                                if (con.getResponseCode() != HttpURLConnection.HTTP_OK)
+                                    return null;
+
+
+                                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                                String line = null;
+                                while (true) {
+                                    line = reader.readLine();
+                                    if (line == null) {
+                                        break;
+                                    }
+                                    sb.append(line);
+                                }
+
+
+                            }
+
+
+                        } catch (Exception e) {
+                            progressDialog.dismiss();
+                            return e.getMessage();   //리턴하면 post로
+
+                        } finally {
 
                 try {
                     if (reader != null) {
