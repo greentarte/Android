@@ -15,6 +15,7 @@
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -22,6 +23,10 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".ResetActivity" />
         <activity android:name=".LoadingActivity" />
+        <activity android:name=".TempActivity" />
+        <activity android:name=".ChargeActivity" />
+        <activity android:name=".LocationActivity" />
+        <activity android:name=".ProfileActivity"></activity>
     </application>
 
 </manifest>

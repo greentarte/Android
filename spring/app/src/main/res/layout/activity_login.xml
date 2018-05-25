@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                app:srcCompat="@drawable/tesla_logo" />
+                app:srcCompat="@drawable/tesla" />
 
             <View
                 android:layout_width="match_parent"
