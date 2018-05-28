@@ -17,6 +17,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
+import android.location.LocationManager;
+import android.location.LocationListener;
+
+import com.google.android.gms.maps.OnMapReadyCallback;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -33,8 +42,17 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.MapStyleOptions;
+
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     ImageView beam_low, beam_high, beam_fog, beam_backfog, warning_battery, warning_parkbreak, warning_belt, warning_repair;
     int bl, bh, bf, bb = 0;
@@ -46,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     boolean flag = true;
     ImageView battery;
     FloatingActionButton fab;
+    TextView charging;
 
     Handler handler = new Handler(); // start_mm 갱신
     private int mm = 0;
@@ -78,6 +97,17 @@ public class MainActivity extends AppCompatActivity {
     String updateurl;
     String user_name = "4team"; //한글안됨
 
+    private GoogleMap googleMap;
+    private LocationManager locationManager;
+    public static double mLatitude;
+    public static double mLongitude;
+    public static Pos srcPos;
+    public static Pos dstPos;
+    public static String[] data;
+
+    EditText geoDst;
+    TextView dmResult;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +126,15 @@ public class MainActivity extends AppCompatActivity {
 
         // 값 불러오기
 
+        charging = findViewById(R.id.gogo);
+        charging.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent4 = new Intent(MainActivity.this, ChargingActivity.class);
+                startActivity(intent4);
+            }
+        });
+
         //상태표시등
         beam_low = findViewById(R.id.beam_low);
         beam_high = findViewById(R.id.beam_high);
@@ -110,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
 
         //시동이후
         start_km = findViewById(R.id.start_km);
-        start_mm = findViewById(R.id.start_mm);
+        start_mm = findViewById(R   .id.start_mm);
         start_whkm = findViewById(R.id.start_whkm);
 
         //최근 충전 이후
@@ -132,6 +171,10 @@ public class MainActivity extends AppCompatActivity {
         //콘텐츠 페이지
         viewPager = findViewById(R.id.pager);
 
+        //
+        geoDst = findViewById(R.id.geoDst);
+        dmResult = findViewById(R.id.dmResult);
+
         int v = 60; //속도
         textView.setText(""+v); //can값을 입력
 
@@ -148,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
 
         //fab
         fab = (FloatingActionButton)findViewById(R.id.floatingActionButton);
-
+        //ControllActivity로 이동
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -231,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Fragment 슬라이드 위해 adatper 호출
-       PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
+        PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
 
         //Server Start
@@ -241,6 +284,25 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        mLatitude = 50.0379326;
+        mLongitude = 8.5621518;
+        srcPos = new Pos(mLatitude, mLongitude);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(MainActivity.this);
+
+        locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+
+        //GPS가 켜져있는지 체크
+        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            //GPS 설정화면으로 이동
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            startActivity(intent);
+            finish();
+        }
+
+        requestMyLocation();
     }
 
     //Control 상태표시등
@@ -316,13 +378,6 @@ public class MainActivity extends AppCompatActivity {
         }else if(battary_percent <= 0){
             battery.setImageResource(R.drawable.b0);
         }
-    }
-
-    //ControllActivity로 이동
-
-    public void click_Control(View v){
-        Intent intent3 = new Intent(MainActivity.this, ControllActivity.class);
-        startActivity(intent3);
     }
 
     public void setSpeed(final String msg){
@@ -633,5 +688,130 @@ public class MainActivity extends AppCompatActivity {
         }
 
     } //UpdateTask
-} // end MainActivity
 
+    public void requestMyLocation(){
+        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            return;
+        }
+        //요청
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 10, locationListener);
+    }
+
+    //위치정보 구하기 리스너
+    LocationListener locationListener;
+
+    {
+        locationListener = new LocationListener() {
+
+            @Override
+            public void onLocationChanged(Location location) {
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                locationManager.removeUpdates(locationListener);
+
+                srcPos.lat = location.getLatitude();
+                srcPos.lng = location.getLongitude();
+
+                mLatitude = srcPos.lat;
+                mLongitude = srcPos.lng;
+
+                Log.d("LATITUDE@@@@@", Double.toString(srcPos.lat));
+                Log.d("LONGITUDE@@@@@", Double.toString(srcPos.lng));
+
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                mapFragment.getMapAsync(MainActivity.this);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                Log.d("gps", "onStatusChanged");
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+            }
+        };
+    }
+
+    @Override
+    public void onMapReady(com.google.android.gms.maps.GoogleMap googleMap) {
+        this.googleMap = googleMap;
+        LatLng position = new LatLng(mLatitude , mLongitude);
+        this.googleMap.addMarker(new MarkerOptions().position(position).title("kikiki"));
+        this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
+    }
+
+    public void runGeocoding(View view)  {
+
+        final GeocodingAPI geocodingAPI = new GeocodingAPI();
+        final String destination = geoDst.getText().toString();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    dstPos = geocodingAPI.request(destination);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        mLatitude = dstPos.lat;
+                        mLongitude = dstPos.lng;
+
+                        Log.d("LATITUDE@@@@@@", Double.toString(dstPos.lat));
+                        Log.d("LONGITUDE@@@@@", Double.toString(dstPos.lng));
+
+                        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                        mapFragment.getMapAsync(MainActivity.this);
+
+                        runDistanceMatrixAPI(srcPos, dstPos);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public void runDistanceMatrixAPI(Pos src, Pos dst){
+
+        final DistanceMatrixAPI distanceMatrixAPI = new DistanceMatrixAPI();
+        final Pos tsrc = src;
+        //final Pos tdst = dst;
+        final Pos tdst = new Pos(50.1172820, 8.6801750);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    data = distanceMatrixAPI.request(tsrc, tdst);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        mLatitude = dstPos.lat;
+                        mLongitude = dstPos.lng;
+
+                        Log.d("DURATION@@@@@@", data[0]);
+                        Log.d("DISTANCE@@@@@@", data[1]);
+
+                        dmResult.setText(data[0]+" "+data[1]);
+                    }
+                });
+            }
+        }).start();
+    }
+} // end MainActivity

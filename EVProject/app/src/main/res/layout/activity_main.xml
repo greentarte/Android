@@ -406,6 +406,11 @@
 
     </LinearLayout>
 
+    <FrameLayout
+        android:layout_width="30dp"
+        android:layout_height="match_parent">
+    </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -424,15 +429,97 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/gogo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="true"
             android:text="Km/h"
             android:textAlignment="center"
             android:textColor="@android:color/background_light"
             android:textSize="30sp"
             android:visibility="visible" />
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="0dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/geoDst"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/common_google_signin_btn_text_light_focused"
+                    android:ems="10"
+                    android:hint="목적지를 입력하세요."
+                    android:inputType="textPersonName"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="#ffffff"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/button2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/common_google_signin_btn_text_light_default"
+                    android:onClick="runGeocoding"
+                    android:text="go"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="목적지까지"
+                android:textColor="@android:color/white"
+                android:textSize="36sp" />
+
+            <TextView
+                android:id="@+id/dmResult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="--Km --시"
+                android:textColor="@android:color/white"
+                android:textSize="36sp" />
+
+        </LinearLayout>
+
     </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        >
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -581,4 +668,5 @@
         </LinearLayout>
 
     </LinearLayout>
+
 </LinearLayout>
