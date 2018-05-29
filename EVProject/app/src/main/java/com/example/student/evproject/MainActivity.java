@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     double monthwhkm = 220;
 
     int total_distance = 23433;
-    double battary_percent= now_capacity/total_capacity*100;
+    double battary_percent = now_capacity / total_capacity * 100;
 
     //tablet to oracle
     String code = "GENSDE123"; //자동차 코드 최초에 1번만 받음
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //시동이후
         start_km = findViewById(R.id.start_km);
-        start_mm = findViewById(R   .id.start_mm);
+        start_mm = findViewById(R.id.start_mm);
         start_whkm = findViewById(R.id.start_whkm);
 
         //최근 충전 이후
@@ -176,10 +176,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         dmResult = findViewById(R.id.dmResult);
 
         int v = 60; //속도
-        textView.setText(""+v); //can값을 입력
+        textView.setText("" + v); //can값을 입력
 
         //배터리 퍼센테이지
-        String percent= ""+battary_percent;
+        String percent = "" + battary_percent;
         testbattery = findViewById(R.id.testbattery);
 
         //기어변속기 PRND
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mainParking.setTextColor(Color.parseColor("#aaaaaa"));
 
         //fab
-        fab = (FloatingActionButton)findViewById(R.id.floatingActionButton);
+        fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         //ControllActivity로 이동
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,37 +201,35 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
 
-
-
         //시동 후 시간 카운트
         final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(flag){
+                while (flag) {
                     try {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
                                 time = String.valueOf(mm);
                                 start_mm.setText(time);
-                                testbattery.setText(String.valueOf((int)battary_percent));
+                                testbattery.setText(String.valueOf((int) battary_percent));
 
                                 controlBeam();
                                 showBattery();
 
-                                start_km.setText(""+startkm);
+                                start_km.setText("" + startkm);
                                 start_whkm.setText("" + startwhkm);
 
-                                String comma1=String.format("%,d",chargekm);
+                                String comma1 = String.format("%,d", chargekm);
                                 charging_km.setText(comma1);
                                 charging_kwh.setText("" + chargekwh);
                                 charging_whkm.setText("" + chargewhkm);
 
-                                String comma2=String.format("%,d",monthkm);
+                                String comma2 = String.format("%,d", monthkm);
                                 month_km.setText(comma2);
                                 month_kwh.setText("" + monthkwh);
                                 month_whkm.setText("" + monthwhkm);
-                                String comma3=String.format("%,d",total_distance);
+                                String comma3 = String.format("%,d", total_distance);
                                 total_mileage.setText(comma3);
 
                             }
@@ -254,11 +252,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         monthkwh += ((int) (chargewhkm * startkm) / 1000);
 //                      chargewhkm=212.4; //임의값
 //                      monthwhkm=257.4; //임의값
-                        battary_percent= now_capacity/total_capacity*100;
+                        battary_percent = now_capacity / total_capacity * 100;
 //현재 주행가능거리
                         String AVAILABLE_DISTANCE = "" + (int) (now_capacity * 3.9);
                         //DB에 차량정보 업데이트
-                        updateurl = "http://70.12.114.147/ws/status_update.do?code=" + code + "&available_distance=" + AVAILABLE_DISTANCE + "&battery_capacity=" + now_capacity + "&indoor_temp=" + 20 + "&outdoor_temp=" + 15 + "&speed=" + 60+ "&charging_status=" + CHARGING_STATUS + "&charging_after_distance=" + chargekm + "&consumption_after_charging=" + chargekwh + "&monthly_distance=" + monthkm + "&monthly_battery_use=" + monthkwh + "&monthly_fuel_efficiency=" + monthwhkm + "&cumulative_mileage=" + total_distance + "&charge_amount=" + 80 + "&latitude=" + LATITUDE + "&longtitude=" + LONGTITUDE + "&model_name=" + MODEL_NAME  + "&user_name=" + user_name+ "&charging_after_fuel_efficiency=" + chargewhkm;
+                        updateurl = "http://70.12.114.147/ws/status_update.do?code=" + code + "&available_distance=" + AVAILABLE_DISTANCE + "&battery_capacity=" + now_capacity + "&indoor_temp=" + 20 + "&outdoor_temp=" + 15 + "&speed=" + 60 + "&charging_status=" + CHARGING_STATUS + "&charging_after_distance=" + chargekm + "&consumption_after_charging=" + chargekwh + "&monthly_distance=" + monthkm + "&monthly_battery_use=" + monthkwh + "&monthly_fuel_efficiency=" + monthwhkm + "&cumulative_mileage=" + total_distance + "&charge_amount=" + 80 + "&latitude=" + LATITUDE + "&longtitude=" + LONGTITUDE + "&model_name=" + MODEL_NAME + "&user_name=" + user_name + "&charging_after_fuel_efficiency=" + chargewhkm;
 
 
                         UpdateTask updateTask = new UpdateTask(updateurl);
@@ -271,6 +269,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         thread.start();
+
+
 
 
         //Fragment 슬라이드 위해 adatper 호출
@@ -291,10 +291,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(MainActivity.this);
 
-        locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         //GPS가 켜져있는지 체크
-        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             //GPS 설정화면으로 이동
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -306,8 +306,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     //Control 상태표시등
-    public void controlBeam(){
-        if(beam_onoff == 1){
+    public void controlBeam() {
+        if (beam_onoff == 1) {
             beam_low.setVisibility(View.VISIBLE);
             beam_high.setVisibility(View.INVISIBLE);
             beam_fog.setVisibility(View.INVISIBLE);
@@ -317,8 +317,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             warning_parkbreak.setVisibility(View.VISIBLE);
             warning_belt.setVisibility(View.INVISIBLE);
             warning_repair.setVisibility(View.INVISIBLE);
-        }
-        else if(beam_onoff == 2){
+        } else if (beam_onoff == 2) {
             beam_low.setVisibility(View.INVISIBLE);
             beam_high.setVisibility(View.VISIBLE);
             beam_fog.setVisibility(View.INVISIBLE);
@@ -328,8 +327,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             warning_parkbreak.setVisibility(View.INVISIBLE);
             warning_belt.setVisibility(View.VISIBLE);
             warning_repair.setVisibility(View.INVISIBLE);
-        }
-        else if(beam_onoff == 3){
+        } else if (beam_onoff == 3) {
             beam_low.setVisibility(View.INVISIBLE);
             beam_high.setVisibility(View.INVISIBLE);
             beam_fog.setVisibility(View.VISIBLE);
@@ -339,8 +337,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             warning_parkbreak.setVisibility(View.INVISIBLE);
             warning_belt.setVisibility(View.INVISIBLE);
             warning_repair.setVisibility(View.VISIBLE);
-        }
-        else if(beam_onoff == 4){
+        } else if (beam_onoff == 4) {
             beam_low.setVisibility(View.INVISIBLE);
             beam_high.setVisibility(View.INVISIBLE);
             beam_fog.setVisibility(View.INVISIBLE);
@@ -356,31 +353,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     //Battery 변경
-    public void showBattery(){
-        if(battary_percent < 100  && battary_percent >= 90){
+    public void showBattery() {
+        if (battary_percent < 100 && battary_percent >= 90) {
             battery.setImageResource(R.drawable.b90);
-        }else if(battary_percent < 90 && battary_percent >= 80){
+        } else if (battary_percent < 90 && battary_percent >= 80) {
             battery.setImageResource(R.drawable.b80);
-        }else if(battary_percent < 80 && battary_percent >= 70){
+        } else if (battary_percent < 80 && battary_percent >= 70) {
             battery.setImageResource(R.drawable.b70);
-        }else if(battary_percent < 70 && battary_percent >= 60){
+        } else if (battary_percent < 70 && battary_percent >= 60) {
             battery.setImageResource(R.drawable.b60);
-        }else if(battary_percent < 60 && battary_percent >= 50){
+        } else if (battary_percent < 60 && battary_percent >= 50) {
             battery.setImageResource(R.drawable.b50);
-        }else if(battary_percent < 50 && battary_percent >= 40){
+        } else if (battary_percent < 50 && battary_percent >= 40) {
             battery.setImageResource(R.drawable.b40);
-        }else if(battary_percent < 40 && battary_percent >= 30){
+        } else if (battary_percent < 40 && battary_percent >= 30) {
             battery.setImageResource(R.drawable.b30);
-        }else if(battary_percent < 30 && battary_percent >= 20){
+        } else if (battary_percent < 30 && battary_percent >= 20) {
             battery.setImageResource(R.drawable.b20);
-        }else if(battary_percent < 20 && battary_percent >= 10){
+        } else if (battary_percent < 20 && battary_percent >= 10) {
             battery.setImageResource(R.drawable.b10);
-        }else if(battary_percent <= 0){
+        } else if (battary_percent <= 0) {
             battery.setImageResource(R.drawable.b0);
         }
     }
 
-    public void setSpeed(final String msg){
+    public void setSpeed(final String msg) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -416,18 +413,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // HttpRequest Start ....
     // HttpRequest Start ....
-    class SendHttp extends AsyncTask<Void,Void,Void> {
+    class SendHttp extends AsyncTask<Void, Void, Void> {
 
-        String surl="http://70.12.114.153/ws/main.do?speed=";
+        String surl = "http://70.12.114.153/ws/main.do?speed=";
         URL url;
         HttpURLConnection urlConn;
         String speed;
-        public SendHttp(){}
-        public SendHttp(String speed){
-            this.speed=speed;
-            surl+=speed;
+
+        public SendHttp() {
+        }
+
+        public SendHttp(String speed) {
+            this.speed = speed;
+            surl += speed;
             try {
-                url=new URL(surl);
+                url = new URL(surl);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -436,7 +436,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                urlConn= (HttpURLConnection) url.openConnection();
+                urlConn = (HttpURLConnection) url.openConnection();
                 urlConn.getResponseCode();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -451,7 +451,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // ServerSocket Start .....
 
-    public class Server extends Thread{
+    public class Server extends Thread {
 
         ServerSocket serverSocket;
         boolean flag = true;
@@ -462,27 +462,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         public Server() throws IOException {
             // Create ServerSocket ...
             serverSocket = new ServerSocket(8888);
-            Log.d("[Server]","Ready Server...");
+            Log.d("[Server]", "Ready Server...");
         }
 
         @Override
         public void run() {
             // Accept Client Connection ...
             try {
-                while(flag) {
-                    Log.d("[Server]","Waiting Server...");
+                while (flag) {
+                    Log.d("[Server]", "Waiting Server...");
                     Socket socket =
                             serverSocket.accept();
                     String client = socket.getInetAddress().getHostAddress();
                     //setConnect(client, "t");
                     new Receiver(socket).start();
                 }
-            }catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        class Receiver extends Thread{
+        class Receiver extends Thread {
 
             InputStream in;
             DataInputStream din;
@@ -500,7 +500,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     dout = new DataOutputStream(out);
                     ip = socket.getInetAddress().getHostAddress();
                     map.put(ip, dout);
-                    System.out.println("Connected Count:"+map.size());
+                    System.out.println("Connected Count:" + map.size());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -510,13 +510,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void run() {
                 try {
-                    while(rflag) {
+                    while (rflag) {
 
-                        if(socket.isConnected() &&
-                                din != null && din.available() > 0 ) {
+                        if (socket.isConnected() &&
+                                din != null && din.available() > 0) {
 
                             String str = din.readUTF();
-                            Log.d("[Server APP]",str);
+                            Log.d("[Server APP]", str);
                             setSpeed(str);
 
                             SendHttp sendHttp = new SendHttp(str);
@@ -524,7 +524,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     }
 
-                }catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
                     //setConnect(null,"f");
@@ -533,21 +533,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }
-                    if(dout != null) {
+                    if (dout != null) {
                         try {
                             dout.close();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
-                    if(din != null) {
+                    if (din != null) {
                         try {
                             din.close();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
-                    if(socket != null) {
+                    if (socket != null) {
                         try {
                             socket.close();
                         } catch (IOException e) {
@@ -567,7 +567,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         // Send Message All Clients
-        class Sender extends Thread{
+        class Sender extends Thread {
 
             String msg;
 
@@ -582,11 +582,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             col = map.values();
                     Iterator<DataOutputStream>
                             it = col.iterator();
-                    while(it.hasNext()) {
+                    while (it.hasNext()) {
                         it.next().writeUTF(msg);
                     }
 
-                }catch(Exception e) {
+                } catch (Exception e) {
                     //e.printStackTrace();
                 }
             }
@@ -689,9 +689,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     } //UpdateTask
 
-    public void requestMyLocation(){
-        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+    public void requestMyLocation() {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         //요청
@@ -743,12 +743,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(com.google.android.gms.maps.GoogleMap googleMap) {
         this.googleMap = googleMap;
-        LatLng position = new LatLng(mLatitude , mLongitude);
+        LatLng position = new LatLng(mLatitude, mLongitude);
         this.googleMap.addMarker(new MarkerOptions().position(position).title("kikiki"));
         this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
     }
 
-    public void runGeocoding(View view)  {
+    public void runGeocoding(View view) {
 
         final GeocodingAPI geocodingAPI = new GeocodingAPI();
         final String destination = geoDst.getText().toString();
@@ -782,7 +782,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }).start();
     }
 
-    public void runDistanceMatrixAPI(Pos src, Pos dst){
+    public void runDistanceMatrixAPI(Pos src, Pos dst) {
 
         final DistanceMatrixAPI distanceMatrixAPI = new DistanceMatrixAPI();
         final Pos tsrc = src;
@@ -808,7 +808,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Log.d("DURATION@@@@@@", data[0]);
                         Log.d("DISTANCE@@@@@@", data[1]);
 
-                        dmResult.setText(data[0]+" "+data[1]);
+                        dmResult.setText(data[0] + " " + data[1]);
                     }
                 });
             }

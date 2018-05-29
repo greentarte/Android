@@ -1,27 +1,22 @@
 package brocolli.example.com.spring;
 
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,8 +24,16 @@ public class MainActivity extends AppCompatActivity {
     ImageView battery, doorlock, air;
     int door_status = 0;
     int air_status = 0;
-    int battary_percent = 30;
+    int battery_percent = 0;
     boolean flag = true;
+
+    //DB to App data
+    String updateUrl = "http://localhost/springTest/control_get.do";
+    String set_temp = "";
+    String available_distance = "";
+    String battery_capacity = "";
+    String indoor_temp = "";
+    String address = "";
 
     Handler handler = new Handler();
 
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         temp = findViewById(R.id.temp);
         location = findViewById(R.id.location);
         battery = findViewById(R.id.batteryview);
-        testbattery=findViewById(R.id.testbattery);
+        testbattery = findViewById(R.id.testbattery);
         doorlock = findViewById(R.id.doorlock);
         air = findViewById(R.id.air);
         battery = findViewById(R.id.batteryview);
@@ -61,10 +64,9 @@ public class MainActivity extends AppCompatActivity {
                                 //spring에서 값을 받아와야함
                                 //필요한 데이터
                                 // 배터리용량, 주행가능거리, 실내온도, 위치, 사용자 정보
-
-                                testbattery.setText(String.valueOf((int) battary_percent));
                                 showBattery();
-
+                                UpdateTask updateTask = new UpdateTask();
+                                updateTask.execute();
                             }
                         });
                         Thread.sleep(5000); // 1 분마다
@@ -82,25 +84,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showBattery() {
-        if (battary_percent < 100 && battary_percent >= 90) {
+        if (battery_percent < 100 && battery_percent >= 90) {
             battery.setImageResource(R.drawable.b90);
-        } else if (battary_percent < 90 && battary_percent >= 80) {
+        } else if (battery_percent < 90 && battery_percent >= 80) {
             battery.setImageResource(R.drawable.b80);
-        } else if (battary_percent < 80 && battary_percent >= 70) {
+        } else if (battery_percent < 80 && battery_percent >= 70) {
             battery.setImageResource(R.drawable.b70);
-        } else if (battary_percent < 70 && battary_percent >= 60) {
+        } else if (battery_percent < 70 && battery_percent >= 60) {
             battery.setImageResource(R.drawable.b60);
-        } else if (battary_percent < 60 && battary_percent >= 50) {
+        } else if (battery_percent < 60 && battery_percent >= 50) {
             battery.setImageResource(R.drawable.b50);
-        } else if (battary_percent < 50 && battary_percent >= 40) {
+        } else if (battery_percent < 50 && battery_percent >= 40) {
             battery.setImageResource(R.drawable.b40);
-        } else if (battary_percent < 40 && battary_percent >= 30) {
+        } else if (battery_percent < 40 && battery_percent >= 30) {
             battery.setImageResource(R.drawable.b30);
-        } else if (battary_percent < 30 && battary_percent >= 20) {
+        } else if (battery_percent < 30 && battery_percent >= 20) {
             battery.setImageResource(R.drawable.b20);
-        } else if (battary_percent < 20 && battary_percent >= 10) {
+        } else if (battery_percent < 20 && battery_percent >= 10) {
             battery.setImageResource(R.drawable.b10);
-        } else if (battary_percent <= 0) {
+        } else if (battery_percent <= 0) {
             battery.setImageResource(R.drawable.b0);
         }
     }
@@ -162,5 +164,66 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void control_get() {
 
+
+    }
+
+    class UpdateTask extends AsyncTask<Void, Void, Void> {
+
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            boolean result = false;
+            URL url = null;
+            HttpURLConnection con = null;
+            BufferedReader br = null;
+            try {
+                url = new URL("http://70.12.114.148/springTest/control_get.do");
+
+                con = (HttpURLConnection) url.openConnection();
+                if (con != null) {
+                    con.setConnectTimeout(5000);
+                    con.setRequestMethod("GET");
+                    con.setRequestProperty("Accept", "*/*");
+//                    if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
+//                        Log.i("-------////",con.getResponseCode()+"");
+//                        return null;
+//                    }
+                    br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+                    String[] outResult = br.readLine().toString().split("/");
+
+                    set_temp = outResult[0];
+                    available_distance = outResult[1];
+                    battery_percent = (int) (Double.parseDouble(outResult[2]) / 90 * 100);
+                    indoor_temp = outResult[3];
+                    address = outResult[4];
+                }
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            //UI change 기입
+            range.setText(available_distance);
+            temp.setText(indoor_temp);
+            testbattery.setText("" + battery_percent);
+            location.setText(address);
+
+//                    status, temp, location, testbattery;
+        }
+    }
 }
+
