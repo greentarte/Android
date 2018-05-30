@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     boolean flag = true;
 
     //DB to App data
-    String updateUrl = "http://70.12.114.147/ws/control_get.do";
+    String updateUrl = "http://70.12.114.148/springTest/control_get.do";
     String set_temp = "";
     String available_distance = "";
     String battery_capacity = "";
@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
             HttpURLConnection con = null;
             BufferedReader br = null;
             try {
-                url = new URL("http://70.12.114.147/ws/control_get.do");
+                url = new URL("http://70.12.114.148/springTest/control_get.do");
 
                 con = (HttpURLConnection) url.openConnection();
                 if (con != null) {

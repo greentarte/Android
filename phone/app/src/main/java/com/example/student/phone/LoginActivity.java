@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         if (userID == null || userPW == null || userID.equals("") || userPW.equals("")) {
             return;
         }
-        loginTask = new LoginTask("http://70.12.114.147/ws/login.do?email=" + userID + "&pwd=" + userPW);
+        loginTask = new LoginTask("http://70.12.114.148/springTest/login.do?email=" + userID + "&pwd=" + userPW);
         loginTask.execute();
     }
 

@@ -271,8 +271,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         thread.start();
 
 
-
-
         //Fragment 슬라이드 위해 adatper 호출
         PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
