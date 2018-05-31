@@ -1,17 +1,22 @@
 package com.example.student.phone;
 
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.SpannableString;
+import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,14 +42,16 @@ public class LoginActivity extends AppCompatActivity {
     EditText editText1, editText2;
     TextView textView1, textView2;
     ProgressDialog progressDialog;
-
+    Button button;
     private SharedPreferences sf;
     LoginTask loginTask;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 
         File file = new File(dirPath);
         if (!file.exists())
@@ -57,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, LoadingActivity.class);
             startActivity(intent);
         }
-
+        button = findViewById(R.id.button);
         editText1 = findViewById(R.id.editText1);
         editText2 = findViewById(R.id.editText2);
         progressDialog = new ProgressDialog(LoginActivity.this);
@@ -74,16 +81,19 @@ public class LoginActivity extends AppCompatActivity {
         content2.setSpan(new UnderlineSpan(), 0, content2.length(), 0);
         textView2.setText(content2);
 
+
     }
 
     public void join(View v) {
         Intent intent = new Intent(LoginActivity.this, JoinActivity.class);
         startActivity(intent);
+
     }
 
     public void reset(View v) {
         Intent intent = new Intent(LoginActivity.this, ResetActivity.class);
         startActivity(intent);
+
     }
 
     public void clickBt(View v) {
@@ -178,6 +188,7 @@ public class LoginActivity extends AppCompatActivity {
                 writeTextFile(filename2, userPW);
 
                 Intent intent = new Intent(LoginActivity.this, LoadingActivity.class);
+
                 intent.putExtra("name", s.substring(2));
                 startActivity(intent);
 
@@ -216,7 +227,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void writeTextFile(String filename, String contents) {
         try {
-            FileWriter fw = new FileWriter(dirPath +"/"+filename);
+            FileWriter fw = new FileWriter(dirPath + "/" + filename);
             fw.write(contents);
             fw.close();
         } catch (Exception e) {

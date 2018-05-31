@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     boolean flag = true;
 
     //DB to App data
-    String updateUrl = "http://70.12.114.148/springTest/control_get.do";
+    String updateUrl = "http://70.12.114.147/ws/control_get.do";
     String set_temp = "";
     String available_distance = "";
     String battery_capacity = "";
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         battery = findViewById(R.id.batteryview);
 
 
-        //시동 후 시간 카운트
+
         final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -151,18 +151,22 @@ public class MainActivity extends AppCompatActivity {
     public void control_temp(View v) {
         Intent intent = new Intent(MainActivity.this, TempActivity.class);
         startActivity(intent);
+        flag=false;
     }
 
     //충전 클릭시 충전제어 화면으로 전환
     public void control_charge(View v) {
         Intent intent = new Intent(MainActivity.this, ChargeActivity.class);
         startActivity(intent);
+        flag=false;
+
     }
 
     //위치 클릭시 위치 화면으로 전환
     public void display_location(View v) {
         Intent intent = new Intent(MainActivity.this, LocationActivity.class);
         startActivity(intent);
+        flag=false;
     }
 
     class UpdateTask extends AsyncTask<Void, Void, Void> {
@@ -196,10 +200,10 @@ public class MainActivity extends AppCompatActivity {
                     String[] outResult = br.readLine().toString().split("/");
 
                     set_temp = outResult[0];
-                    available_distance = outResult[1];
-                    battery_percent = (int) (Double.parseDouble(outResult[2]) / 90 * 100);
-                    indoor_temp = outResult[3];
-                    address = outResult[4];
+                    available_distance = outResult[3];
+                    battery_percent = (int) (Double.parseDouble(outResult[4]) / 90 * 100);
+                    indoor_temp = outResult[5];
+                    address = outResult[6];
                 }
 
             } catch (MalformedURLException e) {

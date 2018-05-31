@@ -161,6 +161,7 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
         mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
 
+
         requestMyLocation();
 
 
