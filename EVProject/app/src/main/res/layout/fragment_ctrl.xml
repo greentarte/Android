@@ -4,10 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="#050c1d"
     tools:context=".CtrlFragment">
 
     <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <!--        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="바람세기"
+            android:textAlignment="center"
+            android:textSize="36sp" />-->
+
+        <ImageView
+            android:id="@+id/wind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/tesla_off" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/bt_wind_down"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:src="@drawable/down_arrow" />
+
+            <ImageButton
+                android:id="@+id/bt_wind_up"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:src="@drawable/up_arrow" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +64,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:orientation="horizontal"></LinearLayout>
+            android:orientation="horizontal">
+
+        </LinearLayout>
 
         <TableLayout
             android:layout_width="match_parent"
@@ -32,25 +80,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@android:color/white"
                     android:text="실외온도"
                     android:textAlignment="center"
+                    android:textColor="@color/aqua"
                     android:textSize="36sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@android:color/white"
                     android:text="실내온도"
                     android:textAlignment="center"
+                    android:textColor="@color/aqua"
                     android:textSize="36sp" />
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@android:color/white"
                 android:gravity="bottom">
 
                 <TextView
@@ -58,9 +105,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:background="@android:color/white"
                     android:text="24"
                     android:textAlignment="textEnd"
+                    android:textColor="#ffffff"
                     android:textSize="50sp" />
 
                 <TextView
@@ -68,6 +115,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="bottom"
                     android:text="℃"
+                    android:textColor="#ffffff"
                     android:textSize="36sp" />
 
                 <TextView
@@ -75,9 +123,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@android:color/white"
                     android:text="28"
                     android:textAlignment="textEnd"
+                    android:textColor="#ffffff"
                     android:textSize="50sp" />
 
                 <TextView
@@ -85,6 +133,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="℃"
+                    android:textColor="#ffffff"
                     android:textSize="36sp" />
 
             </TableRow>
@@ -98,22 +147,42 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:orientation="horizontal"></LinearLayout>
+                android:layout_height="150dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ToggleButton
+                    android:id="@+id/ctrl_cool"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/cool_off"
+                    android:checked="false"
+                    android:textOff=""
+                    android:textOn="" />
+
+                <ToggleButton
+                    android:id="@+id/ctrl_heat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/heat_off"
+                    android:checked="false"
+                    android:textOff=""
+                    android:textOn="" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
             android:text="설정온도"
             android:textAlignment="center"
+            android:textColor="@color/aqua"
             android:textSize="36sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
             android:gravity="bottom"
             android:orientation="horizontal">
 
@@ -122,23 +191,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@android:color/white"
-                android:text="23"
                 android:textAlignment="textEnd"
+                android:textColor="#ffffff"
                 android:textSize="50sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@android:color/white"
                 android:text="℃"
+                android:textColor="#ffffff"
                 android:textSize="36sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:background="@android:color/white"
             android:orientation="horizontal">
 
@@ -147,65 +216,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@android:color/background_light"
-                android:src="@drawable/arrow_down" />
+                android:background="#050c1d"
+                android:paddingBottom="3dp"
+                android:paddingTop="3dp"
+                android:src="@drawable/down_arrow" />
 
             <ImageButton
                 android:id="@+id/bt_temp_up"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@android:color/background_light"
-                android:src="@drawable/arrow_up" />
+                android:background="#050c1d"
+                android:paddingBottom="3dp"
+                android:paddingTop="3dp"
+                android:src="@drawable/up_arrow" />
 
         </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:text="바람세기"
-            android:textAlignment="center"
-            android:textSize="36sp" />
-
-        <ImageView
-            android:id="@+id/wind"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/fan" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/bt_wind_down"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:src="@drawable/arrow_down" />
-
-            <ImageButton
-                android:id="@+id/bt_wind_up"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:src="@drawable/arrow_up" />
-
-        </LinearLayout>
-
 
     </LinearLayout>
 

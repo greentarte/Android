@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,20 +20,21 @@ import java.net.URL;
 
 public class TempActivity extends AppCompatActivity {
     Handler handler = new Handler();
-    TextView setAir, setTemp;
+    TextView setTemp;
     TextView indoorTemp;
     LinearLayout backLayout;
     int airStatus = 0; //0이면 냉방 1이면 히터
-    int onOff = 0; //0이면 off 1이면 on
-    Button button;
 
+    int temp = 23;
+    Button button, temp_up, temp_down;
+    ToggleButton heat_bt, cool_bt;
     String indoor_temp;
 
     //car_control테이블과 연동시 사용하는 변수
     String set_Temp;
     String set_wind;
-    String set_cool;
-    String set_warm;
+    String set_cool = "0";
+    String set_warm = "0";
     String set_charging_amount;
     String charging_port;
     String code;
@@ -47,9 +48,90 @@ public class TempActivity extends AppCompatActivity {
         setContentView(R.layout.activity_temp);
         setTemp = findViewById(R.id.setTemp);
         indoorTemp = findViewById(R.id.indoorTemp);
-        setAir = findViewById(R.id.setAir);
         backLayout = findViewById(R.id.backLayout);
-        button = findViewById(R.id.airControl);
+
+
+        temp_up = findViewById(R.id.bt_temp_up);
+        temp_down = findViewById(R.id.bt_temp_down);
+
+        heat_bt = findViewById(R.id.ctrl_heat);
+        cool_bt = findViewById(R.id.ctrl_cool);
+
+        //설정온도 up 클릭이벤트
+        temp_up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (temp >= 17 && temp < 32) {
+                    temp++;
+                }
+                setTemp.setText("" + (double) temp);
+                //DB설정 온도 삽입
+                SetTask setTask = new SetTask();
+                setTask.execute();
+                //DB설정 온도 삽입
+            }
+        });
+
+        //설정온도 down 클릭이벤트
+        temp_down.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (temp > 17 && temp <= 32) {
+                    temp--;
+                }
+                setTemp.setText("" + (double) temp);
+                //DB설정 온도 삽입
+                SetTask setTask = new SetTask();
+                setTask.execute();
+                //DB설정 온도 삽입
+            }
+        });
+
+        //cool & heat button on/off
+        heat_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (heat_bt.isChecked()) {
+                    set_warm = "1";
+                    set_cool = "0";
+                    heat_bt.setBackgroundDrawable(getDrawable(R.drawable.heat_on));
+                    cool_bt.setBackgroundDrawable(getDrawable(R.drawable.cool_off));
+                    backLayout.setBackgroundResource(R.drawable.tesla_heat);
+
+
+                } else {
+                    set_warm = "0";
+                    set_cool = "0";
+                    heat_bt.setBackgroundDrawable(getDrawable(R.drawable.heat_off));
+                    backLayout.setBackgroundResource(R.drawable.tesla_off);
+
+                }
+                SetTask setTask = new SetTask();
+                setTask.execute();
+            }
+        });
+
+        cool_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (cool_bt.isChecked()) {
+                    set_warm = "0";
+                    set_cool = "1";
+                    cool_bt.setBackgroundDrawable(getDrawable((R.drawable.cool_on)));
+                    heat_bt.setBackgroundDrawable(getDrawable(R.drawable.heat_off));
+                    backLayout.setBackgroundResource(R.drawable.tesla_cool);
+
+                } else {
+                    set_warm = "0";
+                    set_cool = "0";
+                    cool_bt.setBackgroundDrawable(getDrawable(R.drawable.cool_off));
+                    backLayout.setBackgroundResource(R.drawable.tesla_off);
+
+                }
+                SetTask setTask = new SetTask();
+                setTask.execute();
+            }
+        });
 
         final Thread thread = new Thread(new Runnable() {
             @Override
@@ -63,16 +145,14 @@ public class TempActivity extends AppCompatActivity {
                                 UpdateTask updateTask = new UpdateTask();
                                 updateTask.execute();
                                 //DB설정 온도 받기 종료
-
-                                //DB설정 온도 삽입
-                                SetTask setTask = new SetTask("http://70.12.114.148/springTest/seq=SEQ_num.NEXTVAL"+"set_temp"+set_Temp+"set_wind"+set_wind+"set_cool"+set_cool+"set_warm"+set_warm+"set_charging_amount"+set_charging_amount+"charging_port"+charging_port+"code"+code+"set_date=sysdate");
-                                setTask.execute();
-                                //DB설정 온도 삽입
                             }
                         });
 
                         Thread.sleep(5000); // 1 분마다
-
+////DB설정 온도 삽입
+//                        SetTask setTask = new SetTask();
+//                        setTask.execute();
+//                        //DB설정 온도 삽입
 
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -84,18 +164,6 @@ public class TempActivity extends AppCompatActivity {
         thread.start();
     }
 
-    //설정 온도 올림
-    public void temp_up(View v) {
-
-        double temp = Double.parseDouble(setTemp.getText().toString()) + 1;
-        setTemp.setText("" + temp);
-    }
-
-    //설정 온도 내림
-    public void temp_down(View v) {
-        double temp = Double.parseDouble(setTemp.getText().toString()) - 1;
-        setTemp.setText("" + temp);
-    }
 
     //메인화면으로 이동
     public void back(View v) {
@@ -104,32 +172,6 @@ public class TempActivity extends AppCompatActivity {
         flag = false;
     }
 
-    public void setair(View v) {
-        if (airStatus == 1 && onOff == 1) {
-            airStatus = 0;
-            setAir.setText("난방");
-
-            backLayout.setBackgroundResource(R.drawable.heatphone);
-
-        } else if (airStatus == 0 && onOff == 1) {
-            airStatus = 1;
-            setAir.setText("냉방");
-
-            backLayout.setBackgroundResource(R.drawable.coolphone);
-        }
-    }
-
-    public void setOnOff(View v) {
-        if (onOff == 0) {
-            onOff = 1;
-            button.setText("ON");
-
-        } else if (onOff == 1) {
-            onOff = 0;
-            button.setText("OFF");
-            backLayout.setBackgroundResource(R.drawable.offphone);
-        }
-    }
 
     //-----------------------------------------------------------------------------
     class UpdateTask extends AsyncTask<Void, Void, Void> {
@@ -147,7 +189,7 @@ public class TempActivity extends AppCompatActivity {
             HttpURLConnection con = null;
             BufferedReader br = null;
             try {
-                url = new URL("http://70.12.114.148/springTest/control_get.do");
+                url = new URL("http://70.12.114.147/ws/control_get.do");
 
                 con = (HttpURLConnection) url.openConnection();
                 if (con != null) {
@@ -158,21 +200,22 @@ public class TempActivity extends AppCompatActivity {
                     br = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
                     String[] outResult = br.readLine().toString().split("/");
-
+                    //DB에서 받은 값을 변수에 저장함
                     set_Temp = outResult[0];
                     set_cool = outResult[1];
                     set_warm = outResult[2];
                     indoor_temp = outResult[5];
-                    set_charging_amount = outResult[7];
-                    charging_port = outResult[8];
-                    code = outResult[9];
-                    set_wind = outResult[10];
-
-                    if (set_cool.equals("1")) {
-                        setAir.setText("냉방");
-                    } else {
-                        setAir.setText("난방");
-                    }
+                    set_charging_amount = outResult[6];
+                    charging_port = outResult[7];
+                    code = outResult[8];
+                    set_wind = outResult[9];
+//                    Log.i("----",set_Temp);
+//                    Log.i("----",set_cool);
+//                    Log.i("----",set_warm);
+//                    Log.i("----",set_charging_amount);
+//                    Log.i("----",charging_port);
+//                    Log.i("----",code);
+//                    Log.i("----",set_wind);
 
 
                 }
@@ -187,20 +230,19 @@ public class TempActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            //UI change 기입
 
-            double temp = Double.parseDouble(set_Temp);
-            setTemp.setText("" + temp);
+            setTemp.setText("" + toDouble(set_Temp));
+            //DB에서 받은 값을 앱에 적용
             indoorTemp.setText(indoor_temp);
-
-
+            SetTask setTask = new SetTask();
+            setTask.execute();
         }
     }  //updateTask종료
 
     //------------------------------------------------------------------------------
     class SetTask extends AsyncTask<String, Void, String> {
 
-    String url;
+        String url;
 //    "http://70.12.114.148/springTest/setTemp.do";
 
         SetTask() {
@@ -213,6 +255,27 @@ public class TempActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
+            //실행전 설정값이 바뀐것을 받는다.
+//            setTemp.getText().toString().indexOf(".");
+            set_Temp = setTemp.getText().toString().substring(0, setTemp.getText().toString().indexOf(".")); //사용자가 변경한 값을 받아서 저장
+
+            if (set_warm.equals("1")) {
+                heat_bt.setBackgroundDrawable(getDrawable(R.drawable.heat_on));
+                cool_bt.setBackgroundDrawable(getDrawable(R.drawable.cool_off));
+                backLayout.setBackgroundResource(R.drawable.tesla_heat);
+
+                cool_bt.setBackgroundDrawable(getDrawable(R.drawable.cool_off));
+            } else if (set_cool.equals("1")) {
+                heat_bt.setBackgroundDrawable(getDrawable(R.drawable.heat_off));
+
+                cool_bt.setBackgroundDrawable(getDrawable((R.drawable.cool_on)));
+                heat_bt.setBackgroundDrawable(getDrawable(R.drawable.heat_off));
+                backLayout.setBackgroundResource(R.drawable.tesla_cool);
+            } else {
+                cool_bt.setBackgroundDrawable(getDrawable(R.drawable.cool_off));
+                heat_bt.setBackgroundDrawable(getDrawable(R.drawable.heat_off));
+                backLayout.setBackgroundResource(R.drawable.tesla_off);
+            }
 
         }
 
@@ -227,7 +290,8 @@ public class TempActivity extends AppCompatActivity {
             BufferedReader reader = null;
 
             try {
-                url = new URL(this.url);
+
+                url = new URL("http://70.12.114.147/ws/setTemp.do?&set_temp=" + set_Temp + "&set_wind=" + set_wind + "&set_cool=" + set_cool + "&set_warm=" + set_warm + "&set_charging_amount=" + set_charging_amount + "&charging_port=" + charging_port + "&code=" + code);
                 con = (HttpURLConnection) url.openConnection();
 
                 if (con != null) {
@@ -282,5 +346,11 @@ public class TempActivity extends AppCompatActivity {
 
 
     } //SetTask
+
+    public String toDouble(String num) {
+        double temp = Double.parseDouble(num);
+        num = "" + temp;
+        return num;
+    }
 }
 

@@ -16,7 +16,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
         mData = new ArrayList<>();
         mData.add(new ChargingStationFragment());
         mData.add(new WeatherFragment());
-        mData.add(new MP3Fragment());
+        //mData.add(new MP3Fragment());
 
     }
 

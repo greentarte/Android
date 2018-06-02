@@ -25,6 +25,7 @@
         android:gravity="center"
         android:hint="Email"
         android:inputType="textPersonName"
+        android:textColor="@android:color/darker_gray"
         android:textColorHint="@android:color/darker_gray" />
 
     <LinearLayout
@@ -42,6 +43,7 @@
         android:gravity="center"
         android:hint="Password"
         android:inputType="textPassword"
+        android:textColor="@android:color/darker_gray"
         android:textColorHint="@android:color/darker_gray" />
 
     <LinearLayout

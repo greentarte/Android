@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
     public void profile(View v) {
         Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
         startActivity(intent);
+        flag=false;
     }
 
     //자물쇠 모양 클릭시 변하는 것
@@ -184,17 +185,14 @@ public class MainActivity extends AppCompatActivity {
             HttpURLConnection con = null;
             BufferedReader br = null;
             try {
-                url = new URL("http://70.12.114.148/springTest/control_get.do");
+                url = new URL("http://70.12.114.147/ws/control_get.do");
 
                 con = (HttpURLConnection) url.openConnection();
                 if (con != null) {
                     con.setConnectTimeout(5000);
                     con.setRequestMethod("GET");
                     con.setRequestProperty("Accept", "*/*");
-//                    if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
-//                        Log.i("-------////",con.getResponseCode()+"");
-//                        return null;
-//                    }
+
                     br = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
                     String[] outResult = br.readLine().toString().split("/");
@@ -203,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                     available_distance = outResult[3];
                     battery_percent = (int) (Double.parseDouble(outResult[4]) / 90 * 100);
                     indoor_temp = outResult[5];
-                    address = outResult[6];
+                    address = outResult[10];
                 }
 
             } catch (MalformedURLException e) {
@@ -225,6 +223,13 @@ public class MainActivity extends AppCompatActivity {
 
 //                    status, temp, location, testbattery;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        flag=false;
+
+        super.onDestroy();
     }
 }
 

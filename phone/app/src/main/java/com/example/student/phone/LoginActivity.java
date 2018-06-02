@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     public static String filename2 = "reason_why_fork";
     public static String userID = "";
     public static String userPW = "";
-
+    ImageView imageView;
     EditText editText1, editText2;
     TextView textView1, textView2;
     ProgressDialog progressDialog;
@@ -52,6 +54,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        imageView=findViewById(R.id.imageView);
+        AnimationDrawable animationDrawable = (AnimationDrawable)imageView.getDrawable();
+        animationDrawable.start();
 
         File file = new File(dirPath);
         if (!file.exists())

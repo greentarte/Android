@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -28,6 +29,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Map;
 
 
 public class LocationActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -45,19 +48,18 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
         mapFragment.getMapAsync(this);
 
 
-
     }
 
-
-    public void setLocation(double lati, double longti) {
-
-        Location targetLocation = new Location("");//provider name is unnecessary
-        targetLocation.setLatitude(lati);//your coords of course
-        targetLocation.setLongitude(longti);
-
-        showCurrentLocation(targetLocation);
-
-    }
+//
+//    public void setLocation(double lati, double longti) {
+//
+//        Location targetLocation = new Location("");//provider name is unnecessary
+//        targetLocation.setLatitude(lati);//your coords of course
+//        targetLocation.setLongitude(longti);
+//
+//        showCurrentLocation(targetLocation);
+//
+//    }
 
     private void showCurrentLocation(Location location) {
 
@@ -72,7 +74,7 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
         mMap.setMyLocationEnabled(true);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(curPoint));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(curPoint, 15));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(curPoint, 20));
 
     }
 
@@ -159,10 +161,11 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
 
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-
-
-
+        mMap.setBuildingsEnabled(true);
+        mMap.moveCamera(CameraUpdateFactory.zoomBy(20));
         requestMyLocation();
+
+
 
 
     }
