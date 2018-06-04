@@ -12,7 +12,9 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         webView=findViewById(R.id.webView);
+        webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl("http://70.12.114.147/ws/admin.do");
+
     }
 
 }

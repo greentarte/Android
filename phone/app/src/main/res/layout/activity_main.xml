@@ -59,7 +59,7 @@
                 android:layout_gravity="center"
                 android:gravity="right|center_vertical"
                 android:text="0"
-                android:textColor="@android:color/background_light"
+                android:textColor="@android:color/white"
                 android:textSize="18sp" />
 
             <TextView

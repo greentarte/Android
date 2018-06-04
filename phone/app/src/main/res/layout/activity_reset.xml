@@ -56,8 +56,10 @@
         android:id="@+id/button8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/toggle_out_line"
         android:onClick="clickBt"
-        android:text="Reset" />
+        android:text="Reset"
+        android:textColor="#00fff0" />
 
     <LinearLayout
         android:layout_width="match_parent"

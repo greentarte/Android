@@ -28,10 +28,10 @@ public class TempActivity extends AppCompatActivity {
     int temp = 23;
     Button button, temp_up, temp_down;
     ToggleButton heat_bt, cool_bt;
-    String indoor_temp;
+    String indoor_temp="0";
 
     //car_control테이블과 연동시 사용하는 변수
-    String set_Temp;
+    String set_Temp="0";
     String set_wind;
     String set_cool = "0";
     String set_warm = "0";

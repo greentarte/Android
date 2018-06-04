@@ -160,8 +160,7 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        mMap.setBuildingsEnabled(true);
+
         mMap.moveCamera(CameraUpdateFactory.zoomBy(20));
         requestMyLocation();
 
